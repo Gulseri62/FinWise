@@ -4,3 +4,5 @@ mysql-connector-python
 python-dotenv
 flask-bcrypt
 flask-jwt-extended
+Pydantic
+pyJWT

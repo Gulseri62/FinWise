@@ -3,10 +3,14 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 from config.config import Config
 from database.mysql_connector import db
+from router.routes import auth_bp
+
+
 
 def create_app():
     app = Flask(__name__)
     
+    app.register_blueprint(auth_bp)
     app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY', 'dev-key-123')
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
