@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Finansal Okuryazarlık Eğitim İçerik Paketi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+  <style>
+    :root {
+      --primary-color: #00796b;
+      --secondary-color: #00acc1;
+      --accent-color: #ff7043;
+      --light-color: #e0f7fa;
+      --dark-color: #333;
+      --white: #ffffff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--dark-color);
+      line-height: 1.7;
+      
+      background-size: cover;
+      padding-top: 80px;
+    }
+
+    header {
+      background-color: var(--white);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+      padding: 15px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .package-description {
+      margin: 0.5rem 0 1rem 0;
+      font-size: 1rem;
+      color: #444;
+    }
+
+    .logo {
+      font-family: 'Inter', sans-serif;
+      font-size: 2rem;
+      color: var(--primary-color);
+    }
+
+    .logo a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--dark-color);
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary-color);
+    }
+
+    .register {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .register:hover {
+      background-color: #00695c;
+      transform: translateY(-2px);
+    }
+
+    .register a {
+      color: white;
+      text-decoration: none;
+    }
+
+    .menu-icon {
+      display: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .package {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 800px;
+      margin: auto;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    h1 {
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .info-row {
+      display: flex;
+      gap: 2rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+    .package p {
+      text-align: center;
+      font-size: 16px;
+      margin-bottom: 25px;
+    }
+
+    .module {
+      margin-top: 20px;
+      padding: 20px;
+      border-left: 5px solid #2980b9;
+      background: #f5f9fc;
+      border-radius: 6px;
+    }
+
+    .module h3 {
+      margin: 0 0 10px 0;
+      color: #2980b9;
+    }
+
+    .module ul {
+      padding-left: 20px;
+      margin-top: 5px;
+    }
+
+    .module ul li {
+      margin-bottom: 6px;
+    }
+
+    .back-link {
+      display: block;
+      margin: 30px auto 10px auto;
+      max-width: 800px;
+      text-align: center;
+    }
+
+    .back-link a {
+      text-decoration: none;
+      color: #2980b9;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+
+    .back-link a:hover {
+      color: #1c5980;
+    }
+
+    footer {
+      background-color: var(--dark-color);
+      color: var(--white);
+      padding: 50px 5% 20px;
+      margin-top: 80px;
+    }
+
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 40px;
+    }
+
+    .social-media {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .social-media a {
+      color: var(--white);
+      font-size: 1.5rem;
+      transition: color 0.3s;
+    }
+
+    .social-media a:hover {
+      color: var(--accent-color);
+    }
+
+    .footer-nav ul {
+      list-style: none;
+    }
+
+    .footer-nav ul li {
+      margin-bottom: 10px;
+    }
+
+    .footer-nav ul li a {
+      color: var(--white);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .footer-nav ul li a:hover {
+      color: var(--accent-color);
+    }
+
+    .copyright {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      margin-top: 30px;
+    }
+    .info-row {
+        flex-direction: column;
+        gap: 0.3rem;
+      }
+    .copyright .us {
+      color: var(--accent-color);
+      font-weight: 700;
+    }
+
+    @media (max-width: 768px) {
+      .menu-icon {
+        display: block;
+      }
+
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        background-color: var(--white);
+        flex-direction: column;
+        padding: 20px;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo"><a href="about_us.html">FINWISE</a></div>
+  <nav class="nav-links" id="nav-links">
+    <a href="about_us.html">Hakkımızda</a>
+            <a href="financial_advice.html">Finansal Öneri</a>
+      <a href="financial_literacy.html">Finansal Okuryazarlık Eğitimi</a>
+      <a href="budget_planner.html">Bütçe Planlayıcısı</a>
+      <a href="danismanlik.html">Danışmanlık Hizmeti</a>
+      <button class="register"><a href="profile.html">Hesabım</a></button>
+    
+  </nav>
+  <div class="menu-icon" id="menu-icon">☰</div>
+</header>
+
+<div class="package">
+  <h1>Temel Finansal Okuryazarlık Eğitimi</h1>
+  <p>Finansal kararlarınızı bilinçli bir şekilde alabilmeniz için temel bilgilerle donatılmış 8 modüllük bir eğitim paketi.</p>
+  <h2>Genel Bakış</h2>
+      <p class="package-description">Bu paket, finansal okuryazarlığa yeni başlayanlar için hazırlanmıştır. Bütçe yapma, gelir-gider dengesi, temel yatırım kavramları gibi temel finansal bilgiler yer almaktadır.</p>
+
+      <div class="info-row">
+        <div><strong>Süre:</strong> 6 Hafta (Haftada 2 Ders)</div>
+        <div><strong>Modül Sayısı:</strong> 8</div>
+      </div>
+
+  <div class="module">
+  <h3>Modül 1: Finansal Okuryazarlık Nedir?</h3>
+  <ul>
+    <li>Finansal okuryazarlığın tanımı</li>
+    <li>Finansal okuryazarlığın önemi</li>
+    <li>Günlük yaşamda finansal okuryazarlık</li>
+  </ul>
+</div>
+
+<div class="module">
+  <h3>Modül 2: Bütçeleme ve Tasarruf</h3>
+  <ul>
+    <li>Gelir ve giderlerin izlenmesi</li>
+    <li>Gerçekçi bir bütçe oluşturma</li>
+    <li>Tasarruf yöntemleri</li>
+  </ul>
+</div>
+
+<div class="module">
+  <h3>Modül 3: Bankacılık İşlemleri</h3>
+  <ul>
+    <li>Banka türleri ve hizmetleri</li>
+    <li>Hesap türleri ve kullanımları</li>
+    <li>Online bankacılık ve güvenlik</li>
+  </ul>
+</div>
+
+<div class="module">
+  <h3>Modül 4: Kredi ve Borç Yönetimi</h3>
+  <ul>
+    <li>Kredi türleri</li>
+    <li>Kredi notu ve önemi</li>
+    <li>Borçlanma stratejileri</li>
+  </ul>
+</div>
+
+<div class="module">
+  <h3>Modül 5: Yatırımın Temelleri</h3>
+  <ul>
+    <li>Yatırım araçları</li>
+    <li>Risk ve getiri ilişkisi</li>
+    <li>Uzun vadeli yatırım planlaması</li>
+  </ul>
+</div>
+
+<div class="module">
+  <h3>Modül 6: Sigorta ve Risk Yönetimi</h3>
+  <ul>
+    <li>Sigorta türleri</li>
+    <li>Sigorta poliçesi nasıl seçilir?</li>
+    <li>Risklerden korunma yolları</li>
+  </ul>
+</div>
+
+<div class="module">
+  <h3>Modül 7: Tüketici Hakları ve Finansal Dolandırıcılıklar</h3>
+  <ul>
+    <li>Tüketici hakları ve yasal korumalar</li>
+    <li>Finansal dolandırıcılık türleri</li>
+    <li>Güvenli finansal davranışlar</li>
+  </ul>
+</div>
+
+<div class="module">
+  <h3>Modül 8: Finansal Geleceği Planlama</h3>
+  <ul>
+    <li>Emeklilik planlaması</li>
+    <li>Finansal hedefler belirleme</li>
+    <li>Hayat boyu finansal öğrenme</li>
+  </ul>
+</div>
+<div class="module">
+  <h3>Modül 9: Dijital Finansal Araçlar</h3>
+  <ul>
+    <li>Mobil bankacılık uygulamaları</li>
+    <li>Dijital cüzdanlar ve ödeme sistemleri</li>
+    <li>Kripto paralar ve finansal teknolojiler</li>
+  </ul>
+</div>
+
+<div class="module">
+  <h3>Modül 10: Finansal Karar Alma Süreçleri</h3>
+  <ul>
+    <li>Finansal kararların psikolojisi</li>
+    <li>Risk analizi ve karar verme</li>
+    <li>Rasyonel finansal davranış geliştirme</li>
+  </ul>
+</div>
+
+
+
+</div>
+
+<footer>
+  <div class="footer-container">
+    <div class="social-media">
+      <a href="#"><i class='bx bxl-facebook-circle'></i></a>
+      <a href="#"><i class='bx bxl-instagram'></i></a>
+      <a href="#"><i class='bx bxl-twitter'></i></a>
+    </div>
+
+    <div class="footer-nav">
+      <ul>
+        <li><a href="#">Hakkımızda</a></li>
+        <li><a href="#">Eğitimler</a></li>
+        <li><a href="#">Bütçe Aracı</a></li>
+        <li><a href="#">İletişim</a></li>
+      </ul>
+    </div>
+
+    <div class="copyright">
+      © 2026 <span class="us">FINWISE</span>. Tüm hakları saklıdır.
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById("menu-icon").onclick = function () {
+    document.getElementById("nav-links").classList.toggle("active");
+  };
+</script>
+
+</body>
+</html>

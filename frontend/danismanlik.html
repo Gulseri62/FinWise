@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Danışmanlık Hizmeti</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Boxicons for social icons -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+    <style>
+        :root {
+            --primary-color: #00796b;
+            --secondary-color: #00acc1;
+            --accent-color: #ff7043;
+            --light-color: #e0f7fa;
+            --dark-color: #333;
+            --white: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--dark-color);
+            line-height: 1.7;
+            background-color: var(--white);
+            padding-top: 80px;
+        }
+        
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-family: 'Inter', sans-serif;
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+        
+        .logo a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark-color);
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+        
+        .register {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .register:hover {
+            background-color: #00695c;
+            transform: translateY(-2px);
+        }
+        
+        .register a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .menu-icon {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Danışmanlık kartları container */
+        .danismanlik_container {
+            max-width: 1100px;
+            width: 90%;
+            margin: 40px auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+            gap: 25px;
+        }
+
+        .danisman-kartı {
+            background: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease-in-out;
+        }
+        .danisman-kartı:hover {
+            transform: translateY(-5px);
+        }
+
+        .danisman_image_name {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            gap: 15px;
+            background-color: var(--light-color);
+        }
+
+        .danisman_image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            flex-shrink: 0;
+            border: 3px solid var(--primary-color);
+        }
+
+        .danisman_name h3 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.4rem;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .danisman_name p {
+            font-weight: 600;
+            color: var(--secondary-color);
+            font-size: 1rem;
+        }
+
+        .danisman_ozellik {
+            padding: 15px 20px 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: var(--dark-color);
+        }
+
+        .danisman_alan {
+            background-color: var(--light-color);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .danisman_alan a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 700;
+        }
+        .danisman_alan a:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark-color);
+            color: var(--white);
+            padding: 50px 5% 20px;
+            margin-top: 50px;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+        }
+        
+        .social-media {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .social-media a {
+            color: var(--white);
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+        
+        .social-media a:hover {
+            color: var(--accent-color);
+        }
+        
+        .footer-nav ul {
+            list-style: none;
+        }
+        
+        .footer-nav ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-nav ul li a {
+            color: var(--white);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-nav ul li a:hover {
+            color: var(--accent-color);
+        }
+        
+        .copyright {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: 30px;
+        }
+        
+        .copyright .us {
+            color: var(--accent-color);
+            font-weight: 700;
+        }
+        
+        /* Responsive Tasarım */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: var(--white);
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .menu-icon {
+                display: block;
+            }
+
+            .danismanlik_container {
+                grid-template-columns: 1fr;
+                width: 95%;
+                margin: 20px auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo"><a href="about_us.html">FINWISE</a></div>
+    <nav class="nav-links" id="nav-links">
+      <a href="about_us.html">Hakkımızda</a>
+            <a href="financial_advice.html">Finansal Öneri</a>
+        <a href="financial_literacy.html">Finansal Okuryazarlık Eğitimi</a>
+        <a href="budget_planner.html">Bütçe Planlayıcısı</a>
+        <a href="danismanlik.html">Danışmanlık Hizmeti</a>
+        <button class="register"><a href="profile.html">Hesabım</a></button>
+    </nav>
+    <div class="menu-icon" id="menu-icon">☰</div>
+</header>
+
+<div class="danismanlik_container">
+    <div class="danisman-kartı">
+      <div class="danisman_image_name">
+        <div class="danisman_image" style="background-image: url('danisman1.jpg');"></div>
+        <div class="danisman_name">
+          <h3>Ayşe Yılmaz</h3>
+          <p>Kişisel finans ve bütçe planlaması uzmanı</p>
+        </div>
+      </div>
+      <div class="danisman_ozellik">
+        <div class="danisman_alan">Deneyim: 5 yıl</div>
+        <div class="danisman_alan">Emeklilik - BES</div>
+        <div class="danisman_alan">"Emeklilik planı burada başlar."</div>
+        <div class="danisman_alan"><a href="detaylar1.html">Detaylar</a></div>
+      </div>
+    </div>
+  
+    <div class="danisman-kartı">
+      <div class="danisman_image_name">
+        <div class="danisman_image" style="background-image: url('danisman2.jpg');"></div>
+        <div class="danisman_name">
+          <h3>Mehmet Öztürk</h3>
+          <p>Yatırım Danışmanı</p>
+        </div>
+      </div>
+      <div class="danisman_ozellik">
+        <div class="danisman_alan">Deneyim: 8 yıl</div>
+        <div class="danisman_alan">Fonlar - Tahvil</div>
+        <div class="danisman_alan">"Yatırımınız güvende."</div>
+        <div class="danisman_alan"><a href="detaylar2.html">Detaylar</a></div>
+      </div>
+    </div>
+  
+    <div class="danisman-kartı">
+      <div class="danisman_image_name">
+        <div class="danisman_image" style="background-image: url('danisman3.jpg');"></div>
+        <div class="danisman_name">
+          <h3>Zeynep Kaya</h3>
+          <p>Bütçe Danışmanı</p>
+
+    </div>
+  </div>
+  <div class="danisman_ozellik">
+    <div class="danisman_alan">Deneyim: 6 yıl</div>
+    <div class="danisman_alan">Bütçe - Tasarruf</div>
+    <div class="danisman_alan">"Tasarrufunuzu maksimize edin."</div>
+    <div class="danisman_alan"><a href="detaylar3.html">Detaylar</a></div>
+  </div>
+</div>
+</div>
+
+<footer>
+  <div class="footer-container">
+    <div class="footer-nav">
+      <h3>Site Haritası</h3>
+      <ul>
+        <li><a href="index.html">Ana Sayfa</a></li>
+        <li><a href="about_us.html">Hakkımızda</a></li>
+        <li><a href="financial_literacy.html">Finansal Okuryazarlık</a></li>
+        <li><a href="budget_planner.html">Bütçe Planlayıcısı</a></li>
+        <li><a href="danismanlik.html">Danışmanlık Hizmeti</a></li>
+      </ul>
+    </div>
+    <div class="footer-nav">
+      <h3>İletişim</h3>
+      <ul>
+        <li>Telefon: +90 123 456 7890</li>
+        <li>Email: info@finwise.com</li>
+        <li>Adres: İstanbul, Türkiye</li>
+      </ul>
+    </div>
+    <div class="footer-nav">
+      <h3>Sosyal Medya</h3>
+      <div class="social-media">
+        <a href="#" aria-label="Facebook"><i class='bx bxl-facebook'></i></a>
+        <a href="#" aria-label="Twitter"><i class='bx bxl-twitter'></i></a>
+        <a href="#" aria-label="Instagram"><i class='bx bxl-instagram'></i></a>
+      </div>
+    </div>
+    <div class="copyright">
+      &copy; 2026 FINWISE | Tüm Hakları Saklıdır. <span class="us">FINWISE Ekibi</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const menuIcon = document.getElementById('menu-icon');
+  const navLinks = document.getElementById('nav-links');
+
+  menuIcon.addEventListener('click', () => {
+    navLinks.classList.toggle('active');
+  });
+</script>
+
+</body>
+</html>
