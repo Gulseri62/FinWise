@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Neden Finansal Okuryazarlık Eğitimi Almalısınız? - FINWISE</title>
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #00796b;
+      --secondary-color: #00acc1;
+      --accent-color: #ff7043;
+      --light-color: #e0f7fa;
+      --dark-color: #333;
+      --white: #ffffff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--dark-color);
+      line-height: 1.7;
+      background-color: var(--white);
+      padding-top: 80px;
+    }
+
+    header {
+      background-color: var(--white);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+      padding: 15px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-family: 'Inter', sans-serif;
+      font-size: 2rem;
+      color: var(--primary-color);
+    }
+
+    .logo a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--dark-color);
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary-color);
+    }
+
+    .register {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .register:hover {
+      background-color: #00695c;
+      transform: translateY(-2px);
+    }
+
+    .register a {
+      color: white;
+      text-decoration: none;
+    }
+
+    .menu-icon {
+      display: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 3px 10px rgb(0 0 0 / 0.1);
+    }
+    main h2 {
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+      border-bottom: 2px solid var(--primary-color);
+      padding-bottom: 0.5rem;
+    }
+    section.package {
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #ddd;
+    }
+    section.package:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+    section.package h3 {
+      color: var(--primary-color);
+      margin-top: 0;
+    }
+    .package-description {
+      margin: 0.5rem 0 1rem 0;
+      font-size: 1rem;
+      color: #444;
+    }
+    .module-list, .goals-list {
+      list-style: disc inside;
+      margin-left: 1rem;
+      color: #555;
+    }
+    .info-row {
+      display: flex;
+      gap: 2rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+
+    footer {
+      background-color: var(--dark-color);
+      color: var(--white);
+      padding: 50px 5% 20px;
+    }
+
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 40px;
+    }
+
+    .social-media {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .social-media a {
+      color: var(--white);
+      font-size: 1.5rem;
+      transition: color 0.3s;
+    }
+
+    .social-media a:hover {
+      color: var(--accent-color);
+    }
+
+    .footer-nav ul {
+      list-style: none;
+    }
+
+    .footer-nav ul li {
+      margin-bottom: 10px;
+    }
+
+    .footer-nav ul li a {
+      color: var(--white);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .footer-nav ul li a:hover {
+      color: var(--accent-color);
+    }
+
+    .copyright {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      margin-top: 30px;
+    }
+
+    .copyright .us {
+      color: var(--accent-color);
+      font-weight: 700;
+    }
+
+    @media(max-width: 768px) {
+      .menu-icon {
+        display: block;
+      }
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        background-color: var(--white);
+        flex-direction: column;
+        padding: 20px;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+      }
+      .nav-links.active {
+        display: flex;
+      }
+      .info-row {
+        flex-direction: column;
+        gap: 0.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo"><a href="about_us.html">FINWISE</a></div>
+    <nav class="nav-links" id="nav-links">
+        <a href="about_us.html">Hakkımızda</a>
+            <a href="financial_advice.html">Finansal Öneri</a>
+            <a href="financial_literacy.html">Finansal Okuryazarlık Eğitimi</a>
+            <a href="budget_planner.html">Bütçe Planlayıcısı</a>
+            <a href="danismanlik.html">Danışmanlık Hizmeti</a>
+      <button class="register"><a href="profile.html">Hesabım</a></button>
+    </nav>
+    <div class="menu-icon" id="menu-icon">☰</div>
+  </header>
+
+  <main>
+    <h2>Neden Finansal Okuryazarlık Eğitimi Almalısınız?</h2>
+    <section class="package">
+      <h3>Genel Bakış</h3>
+      <p class="package-description">
+        Finansal okuryazarlık, bireylerin para yönetimi konusunda bilgi sahibi olması, finansal ürünleri ve hizmetleri anlayarak doğru kararlar verebilmesidir. Harcama, birikim, yatırım ve borçlanma gibi konularda bilinçli davranmayı içerir.
+      </p>
+      <h3>Neden Finansal Okuryazarlık Eğitimi Almalısınız?</h3>
+      <p class="package-description">
+        💡 Güncel ve Uygulanabilir Bilgiler:
+Eğitimimiz, yalnızca teorik bilgilerle sınırlı kalmaz. Günlük hayatta karşılaştığınız gerçek finansal durumlara yönelik pratik çözümler sunar.
+</p>
+📊 Bireysel Finans Yönetimine Özel İçerikler:
+Gelir-gider dengesi kurmaktan yatırım yapmaya kadar her bireyin ihtiyaç duyabileceği temel finansal konuları adım adım öğretir.
+</p>
+👩‍🏫 Uzmanlar Tarafından Hazırlandı:
+İçerikler, finansal okuryazarlık konusunda uzman eğitmenler ve alan profesyonelleri tarafından titizlikle hazırlanmıştır.
+</p>
+🧠 Anlaşılır ve Sade Dil:
+Her yaş ve meslek grubundan bireyin kolaylıkla anlayabileceği, sade bir dil ve görsellerle desteklenmiş anlatım sunar.
+</p>
+🎯 Hedefinize Ulaşın:
+Borçlarınızı yönetmek, tasarruf alışkanlığı kazanmak ve finansal özgürlüğe giden yolda sağlam adımlar atmak için bu eğitim tam size göre.
+</p>
+Finansal bilincinizi artırmak, geleceğinizi güvence altına almak için ilk adımı bugün atın.
+
+
+      </p>
+
+      
+
+      <h4>Modüller</h4>
+      <ul class="module-list">
+        <li>Finansal Okuryazarlığa Giriş</li>
+        <li>Bütçe Oluşturma ve Yönetme</li>
+        <li>Gelir ve Gider Analizi</li>
+        <li>Tasarruf Teknikleri</li>
+        <li>Kredi ve Borç Yönetimi</li>
+        <li>Temel Yatırım Araçları</li>
+        <li>Finansal Hedef Belirleme</li>
+        <li>Risk Yönetimi ve Sigorta</li>
+      </ul>
+
+      <h4>Hedefler</h4>
+      <ul class="goals-list">
+        <li>Kişisel finans yönetiminde bilinç kazanmak</li>
+        <li>Bütçe hazırlama ve kontrolü öğrenmek</li>
+        <li>Finansal hedefler belirleyebilmek</li>
+        <li>Temel yatırım ve tasarruf yöntemlerini anlamak</li>
+        <li>Kredi ve borç yönetimini etkin şekilde yapabilmek</li>
+      </ul>
+    </section>
+
+    <!-- <section class="package">
+      <h2>Detaylı Eğitim Paketi: Yatırım Stratejileri</h2>
+      <h3>Genel Bakış</h3>
+      <p class="package-description">
+        Bu eğitim paketi, yatırım yapmaya başlamak isteyenler için hazırlanmıştır. Hisse senetleri, tahviller, fonlar ve diğer yatırım araçlarının temel prensipleri ele alınmaktadır.
+      </p>
+
+      <div class="info-row">
+        <div><strong>Süre:</strong> 8 Hafta (Haftada 2 Ders)</div>
+        <div><strong>Modül Sayısı:</strong> 10</div>
+      </div>
+
+      <h4>Modüller</h4>
+      <ul class="module-list">
+        <li>Yatırım Araçlarına Genel Bakış</li>
+        <li>Hisse Senedi Analizi</li>
+        <li>Tahvil ve Bono Piyasaları</li>
+        <li>Yatırım Fonları</li>
+        <li>Risk ve Getiri Yönetimi</li>
+        <li>Portföy Oluşturma Teknikleri</li>
+        <li>Temel ve Teknik Analiz</li>
+        <li>Yatırım Psikolojisi</li>
+        <li>Vergi Avantajları ve Yatırım</li>
+        <li>Uzun Vadeli Yatırım Stratejileri</li>
+      </ul>
+
+      <h4>Hedefler</h4>
+      <ul class="goals-list">
+        <li>Farklı yatırım araçlarını tanımak</li>
+        <li>Hisse senedi ve tahvil analizini öğrenmek</li>
+        <li>Portföy çeşitlendirmesinin önemini kavramak</li>
+        <li>Yatırım risklerini yönetebilmek</li>
+        <li>Uzun vadeli yatırım stratejileri geliştirmek</li>
+      </ul>
+    </section>
+  </main> -->
+  </main>
+
+  <footer>
+    <div class="footer-container">
+      <div class="social-media">
+        <a href="#"><i class='bx bxl-facebook'></i></a>
+        <a href="#"><i class='bx bxl-twitter'></i></a>
+        <a href="#"><i class='bx bxl-instagram'></i></a>
+        <a href="#"><i class='bx bxl-youtube'></i></a>
+        <a href="#"><i class='bx bxl-linkedin'></i></a>
+      </div>
+      <div class="footer-nav">
+        <ul>
+          <li><a href="basic_finance.html">Temel Finans</a></li>
+          <li><a href="investment_strategies.html">Yatırım Stratejileri</a></li>
+          <li><a href="tax_planning.html">Vergi Planlaması</a></li>
+          <li><a href="retirement_planning.html">Emeklilik Planlaması</a></li>
+          <li><a href="personal_budgeting.html">Kişisel Bütçe Yönetimi</a></li>
+        </ul>
+      </div>
+      <div class="footer-nav">
+        <ul>
+          <li>Telefon: +90 123 456 7890</li>
+          <li>Email: destek@finwise.com</li>
+          <li>Adres: İstanbul, Türkiye</li>
+        </ul>
+      </div>
+      <div class="footer-nav">
+        <ul>
+          <li><a href="index.html">Ana Sayfa</a></li>
+          <li><a href="about_us.html">Hakkımızda</a></li>
+          <li><a href="education_packages.html">Eğitim Paketleri</a></li>
+          <li><a href="contact.html">İletişim</a></li>
+        </ul>
+      </div>
+      <div class="copyright">
+        <p>&copy; 2026 FINWISE | Tüm Hakları Saklıdır. <span class="us">FINWISE Eğitim Ekibi</span></p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const menuIcon = document.getElementById('menu-icon');
+    const navLinks = document.getElementById('nav-links');
+
+    menuIcon.addEventListener('click', () => {
+      navLinks.classList.toggle('active');
+    });
+  </script>
+</body>
+</html>
