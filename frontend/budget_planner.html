@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FINWISE - Bütçe Yönetimi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Coiny&family=Sono:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet' />
+    <style>
+        /* CSS stilleri aynı kalır, buraya dahil etmiyorum */
+        :root {
+            --primary-color: #00796b;
+            --secondary-color: #00acc1;
+            --accent-color: #ff7043;
+            --light-color: #e0f7fa;
+            --dark-color: #333;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--dark-color);
+            line-height: 1.7;
+            background-color: #f9f9f9;
+        }
+
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Inter', sans-serif;
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+
+        .logo a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark-color);
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .register {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .register:hover {
+            background-color: #00695c;
+            transform: translateY(-2px);
+        }
+
+        .register a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .menu-icon {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Ana İçerik */
+        .main-content {
+            padding: 120px 5% 80px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-family: 'Inter', sans-serif;
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -10px;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        /* Bölüm Stilleri */
+        .section-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .section {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-top: 4px solid var(--secondary-color);
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        /* Form Stilleri */
+        input, select, textarea {
+            padding: 12px 15px;
+            margin: 8px 0;
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+        }
+
+        .section button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #00695c;
+            transform: translateY(-2px);
+        }
+
+        /* Tablo Stilleri */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background-color: var(--light-color);
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .deleteBtn {
+            background-color: #e74c3c;
+            padding: 6px 12px;
+            font-size: 0.9rem;
+            width: auto;
+        }
+
+        .deleteBtn:hover {
+            background-color: #c0392b;
+        }
+
+        /* Mesaj Stilleri */
+        .error {
+            color: #e74c3c;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .success {
+            color: #2ecc71;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+        
+        .alert-info, .alert-success, .alert-warning, .alert-danger {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+        .alert-info { background-color: #e0f7fa; color: #00acc1; }
+        .alert-success { background-color: #d4edda; color: #28a745; }
+        .alert-warning { background-color: #fff3cd; color: #ffc107; }
+        .alert-danger { background-color: #f8d7da; color: #dc3545; }
+        .d-none { display: none !important; }
+        .d-block { display: block !important; }
+
+        /* Rapor Bölümü */
+        #reportResult {
+            background-color: var(--white);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            white-space: pre-wrap;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark-color);
+            color: var(--white);
+            padding: 50px 5% 20px;
+            margin-top: 50px;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+        }
+
+        .social-media {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .social-media a {
+            color: var(--white);
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+
+        .social-media a:hover {
+            color: var(--accent-color);
+        }
+
+        .footer-nav ul {
+            list-style: none;
+        }
+
+        .footer-nav ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-nav ul li a {
+            color: var(--white);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-nav ul li a:hover {
+            color: var(--accent-color);
+        }
+
+        .copyright {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: 30px;
+        }
+
+        .copyright .us {
+            color: var(--accent-color);
+            font-weight: 700;
+        }
+
+        /* Responsive Tasarım */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: var(--white);
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .menu-icon {
+                display: block;
+            }
+
+            .section-container {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo"><a href="about_us.html">FINWISE</a></div>
+        <nav class="nav-links" id="nav-links">
+            <a href="about_us.html">Hakkımızda</a>
+            <a href="financial_advice.html">Finansal Öneri</a>
+            <a href="financial_literacy.html">Finansal Okuryazarlık Eğitimi</a>
+            <a href="budget_planner.html">Bütçe Planlayıcısı</a>
+            <a href="danismanlik.html">Danışmanlık Hizmeti</a>
+            <button class="register"><a href="profile.html">Hesabım</a></button>
+        </nav>
+        <div class="menu-icon" id="menu-icon">☰</div>
+    </header>
+
+    <div class="main-content">
+        <h1>Bütçe Yönetimi</h1>
+
+        <div class="section-container">
+            <div class="section">
+                <h2>Gelir Ekle</h2>
+                <form id="incomeForm">
+                    <input type="number" step="0.01" min="0" name="amount" placeholder="Tutar" required />
+                    <input type="text" name="category" placeholder="Kategori" required />
+                    <input type="date" name="entry_date" required />
+                    <textarea name="description" placeholder="Açıklama (opsiyonel)" rows="3"></textarea>
+                    <button type="submit">Gelir Ekle</button>
+                </form>
+                <div id="incomeMsg" class="alert d-none"></div>
+            </div>
+
+            <div class="section">
+                <h2>Gider Ekle</h2>
+                <form id="expenseForm">
+                    <input type="number" step="0.01" min="0" name="amount" placeholder="Tutar" required />
+                    <input type="text" name="category" placeholder="Kategori" required />
+                    <input type="date" name="entry_date" required />
+                    <textarea name="description" placeholder="Açıklama (opsiyonel)" rows="3"></textarea>
+                    <button type="submit">Gider Ekle</button>
+                </form>
+                <div id="expenseMsg" class="alert d-none"></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Bütçe İşlemleri</h2>
+            <button id="loadTransactions">İşlemleri Yükle</button>
+            <table id="transactionsTable" style="display:none;">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tip</th>
+                        <th>Tutar</th>
+                        <th>Kategori</th>
+                        <th>Açıklama</th>
+                        <th>Tarih</th>
+                        <th>İşlem</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div id="transactionsMsg" class="alert d-none"></div>
+        </div>
+
+        <div class="section">
+            <h2>Bütçe Raporu</h2>
+            <label for="reportType">Rapor Tipi:</label>
+            <select id="reportType">
+                <option value="daily">Günlük</option>
+                <option value="weekly">Haftalık</option>
+                <option value="monthly" selected>Aylık</option>
+            </select>
+            <button id="loadReport">Raporu Getir</button>
+            <pre id="reportResult"></pre>
+            <div id="reportMsg" class="alert d-none"></div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div>
+                <h3>FINWISE</h3>
+                <p>Finansal okuryazarlık ve bilinçlendirme platformu olarak bireylerin finansal sağlığını iyileştirmek için çalışıyoruz.</p>
+                <div class="social-media">
+                    <a href="#"><i class='bx bxl-facebook'></i></a>
+                    <a href="#"><i class='bx bxl-twitter'></i></a>
+                    <a href="#"><i class='bx bxl-instagram'></i></a>
+                    <a href="#"><i class='bx bxl-youtube'></i></a>
+                </div>
+            </div>
+            <div class="footer-nav">
+                <h3>Hızlı Linkler</h3>
+                <ul>
+                    <li><a href="index.html">Ana sayfa</a></li>
+                    <li><a href="about_us.html">Hakkımızda</a></li>
+                    <li><a href="financial_literacy.html">Eğitimler</a></li>
+                    <li><a href="consultancy.html">Danışmanlık</a></li>
+                    <li><a href="contact.html">İletişim</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3>İletişim</h3>
+                <p><i class='bx bx-map'></i> Levent, İstanbul</p>
+                <p><i class='bx bx-phone'></i> 0212 123 45 67</p>
+                <p><i class='bx bx-envelope'></i> info@FINWISE.com</p>
+            </div>
+            <div class="copyright">
+                <p>Copyright &copy; 2025 FINWISE. Tüm hakları saklıdır. <span class="us">Designed by FINWISE Team</span></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000';
+        const API_BASE = '/budget';
+
+        // Ortak mesaj gösterme fonksiyonu
+        function displayMessage(message, type = 'info', targetElement) {
+            if (targetElement) {
+                targetElement.textContent = message;
+                // Bootstrap alert sınıflarını ve d-block/d-none kullanarak görünürlüğü yönet
+                targetElement.className = `alert alert-${type} d-block`;
+                // Mesajı belli bir süre sonra temizle ve gizle
+                setTimeout(() => {
+                    targetElement.textContent = '';
+                    targetElement.className = 'alert d-none';
+                }, 5000); // 5 saniye sonra mesajı kaldır
+            } else {
+                console.warn("Mesaj elementi bulunamadı:", message);
+            }
+        }
+
+        // Genel API isteği fonksiyonu
+        async function apiRequest(endpoint, method, body, resultElementId = null) {
+            const targetResultElement = resultElementId ? document.getElementById(resultElementId) : null;
+
+            if (targetResultElement) {
+                displayMessage('İstek gönderiliyor...', 'info', targetResultElement);
+            } else {
+                console.log('API İsteği gönderiliyor (mesaj elementi yok).');
+            }
+            
+
+            const token = localStorage.getItem('authToken');
+
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+
+            try {
+                const response = await fetch(API_BASE_URL + endpoint, {
+                    method: method,
+                    headers: headers,
+                    body: body ? JSON.stringify(body) : undefined,
+                });
+
+                // **204 No Content durumunu ele al**
+                if (response.status === 204) {
+                    displayMessage('İşlem başarıyla tamamlandı (veri yok).', 'success', targetResultElement);
+                    return null; // Yanıt gövdesi olmadığı için null döndür
+                }
+
+                if (!response.ok) {
+                    const contentType = response.headers.get('content-type');
+                    let errorData = {};
+                    if (contentType && contentType.includes('application/json')) {
+                        errorData = await response.json().catch(() => ({}));
+                    }
+                    
+                    let errorMessage = errorData.errorMessage || errorData.detail || `HTTP error! status: ${response.status}`;
+                    if (errorData.details && typeof errorData.details === 'object') {
+                        errorMessage += "\nDetaylar: " + JSON.stringify(errorData.details);
+                    }
+                    
+                    displayMessage(`Hata: ${errorMessage}`, 'error', targetResultElement);
+                    console.error('API Hatası Detay:', errorData);
+                    throw new Error(errorMessage);
+                }
+
+                const data = await response.json();
+                if (targetResultElement && method !== 'GET') {
+                    displayMessage(data.message || 'İşlem başarılı!', 'success', targetResultElement);
+                } else if (targetResultElement && method === 'GET') {
+                    displayMessage('Veriler başarıyla yüklendi.', 'success', targetResultElement);
+                }
+                return data;
+            } catch (error) {
+                displayMessage(`Beklenmedik Hata: ${error.message}`, 'error', targetResultElement);
+                console.error('API Hatası:', error);
+                throw error;
+            }
+        }
+
+        // Gelir Ekleme
+        document.getElementById('incomeForm').addEventListener('submit', async e => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = {
+                amount: parseFloat(formData.get('amount')),
+                category: formData.get('category'),
+                description: formData.get('description') || null,
+                entry_date: formData.get('entry_date'),
+                // created_at ve updated_at backend tarafından yönetilmeli
+                entry_type: 'income'
+            };
+
+            try {
+                await apiRequest(API_BASE + '/income', 'POST', data, 'incomeMsg');
+                e.target.reset();
+                // Gelir eklendikten sonra işlemleri otomatik yükleyebiliriz
+                document.getElementById('loadTransactions').click();
+            } catch (error) {
+                console.error('Gelir ekleme hatası:', error);
+            }
+        });
+
+        // Gider Ekleme
+        document.getElementById('expenseForm').addEventListener('submit', async e => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = {
+                amount: parseFloat(formData.get('amount')),
+                category: formData.get('category'),
+                description: formData.get('description') || null,
+                entry_date: formData.get('entry_date'),
+                // created_at ve updated_at backend tarafından yönetilmeli
+                entry_type: 'expense'
+            };
+
+            try {
+                await apiRequest(API_BASE + '/expense', 'POST', data, 'expenseMsg');
+                e.target.reset();
+                // Gider eklendikten sonra işlemleri otomatik yükleyebiliriz
+                document.getElementById('loadTransactions').click();
+            } catch (error) {
+                console.error('Gider ekleme hatası:', error);
+            }
+        });
+
+        // İşlemleri Yükle
+        document.getElementById('loadTransactions').addEventListener('click', async () => {
+            const tbody = document.querySelector('#transactionsTable tbody');
+            try {
+                // apiRequest artık 204 No Content durumunda null döner.
+                // Eğer data.items boş gelirse (backend 200 OK ile [] dönüyorsa), bu durum aşağıda kontrol edilir.
+                const data = await apiRequest(API_BASE + '/transactions', 'GET', null, 'transactionsMsg');
+                
+                tbody.innerHTML = ''; // Önceki satırları temizle
+
+                // 'data' null olabilir (204 durumu) veya 'items' property'si olmayabilir
+                if (data && Array.isArray(data.items) && data.items.length > 0) {
+                    data.items.forEach(item => {
+                        const tr = document.createElement('tr');
+                        if (item.entry_type=='income'){
+                            entry_type='Gelir';
+                        }
+                        else{
+                            entry_type='Gider';
+                        }
+                        tr.innerHTML = `
+                            <td>${item.id}</td>
+                            <td>${entry_type}</td>
+                            <td>${item.amount !== undefined ? item.amount.toFixed(2) : ''}</td>
+                            <td>${item.category || ''}</td>
+                            <td>${item.description || ''}</td>
+                            <td>${item.created_at || ''}</td>
+                            <td><button data-id="${item.id}" class="deleteBtn">Sil</button></td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                    document.getElementById('transactionsTable').style.display = 'table';
+                } else {
+                    tbody.innerHTML = ''; // Tablo içeriğini temizle
+                    document.getElementById('transactionsTable').style.display = 'none'; // Tabloyu gizle
+                    displayMessage('Henüz hiç işlem bulunmamaktadır.', 'info', document.getElementById('transactionsMsg'));
+                }
+
+                // Silme butonlarına event bağla (her yüklemede yeniden bağla)
+                document.querySelectorAll('.deleteBtn').forEach(btn => {
+                    btn.onclick = async () => {
+                        if (!confirm('Bu kaydı silmek istediğinize emin misiniz?')) return;
+                        const id = btn.getAttribute('data-id');
+                        try {
+                            // API_BASE_URL + API_BASE + ... doğru URL yapısı olmalı
+                            // apiRequest, 204 durumunda null döndürecek ve mesajı gösterecek
+                            await apiRequest(`${API_BASE}/transactions/${id}`, 'DELETE', null, 'transactionsMsg');
+                            btn.closest('tr').remove(); // Satırı doğrudan DOM'dan kaldır
+                            // displayMessage zaten apiRequest içinde çağrıldığı için burada tekrar çağırmaya gerek yok
+                        } catch (error) {
+                            console.error('Silme hatası:', error);
+                            // displayMessage zaten apiRequest içinde çağrıldığı için burada tekrar çağırmaya gerek yok
+                        }
+                    };
+                });
+            } catch (error) {
+                console.error('İşlemler yüklenirken hata:', error);
+                displayMessage(`İşlemler yüklenirken hata oluştu: ${error.message}`, 'error', document.getElementById('transactionsMsg'));
+            }
+        });
+
+        // Rapor Getir
+        document.getElementById('loadReport').addEventListener('click', async () => {
+            const reportResultDiv = document.getElementById('reportResult');
+            try {
+                const reportType = document.getElementById('reportType').value;
+const url = `${API_BASE}/report?type=${encodeURIComponent(reportType)}`;
+const data = await apiRequest(url, 'GET', null, 'reportMsg');
+
+                if (data) {
+                    const reportText = `
+Toplam Gelir: ${data.total_income !== undefined ? data.total_income.toFixed(2) : '0.00'}
+Toplam Gider: ${data.total_expense !== undefined ? data.total_expense.toFixed(2) : '0.00'}
+Bakiye: ${data.balance !== undefined ? data.balance.toFixed(2) : '0.00'}
+
+Kategori Bazlı Özet:
+${data.summary_by_category && data.summary_by_category.length > 0 ?
+    data.summary_by_category.map(c => `- ${c.category} (${c.entry_type}): ${c.total_amount !== undefined ? c.total_amount.toFixed(2) : '0.00'} TL`).join('\n') : 'Yok'}
+                    `;
+                    reportResultDiv.textContent = reportText;
+                } else {
+                    reportResultDiv.textContent = 'Rapor verisi bulunamadı.';
+                }
+            } catch (error) {
+                console.error('Rapor alınırken hata:', error);
+                displayMessage(`Rapor alınırken hata oluştu: ${error.message}`, 'error', document.getElementById('reportMsg'));
+                reportResultDiv.textContent = 'Rapor yüklenirken bir hata oluştu.';
+            }
+        });
+
+        // Token kontrolü (Bu fonksiyon, sayfa yüklendiğinde otomatik olarak çalıştırılabilir)
+        function checkAuth() {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('Bu sayfaya erişmek için lütfen önce giriş yapın!');
+                window.location.href = 'baslangic.html'; // Giriş sayfanızın adresi
+            }
+        }
+
+        // Sayfa yüklendiğinde token kontrolü yap
+        checkAuth();
+
+        // Mobil menü toggle
+        document.getElementById('menu-icon').addEventListener('click', function() {
+            document.getElementById('nav-links').classList.toggle('active');
+        });
+    </script>
+
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>

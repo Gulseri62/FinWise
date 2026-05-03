@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danışman Paneli - Randevularım, Takvimim, Geri Bildirimler</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
+    <style>
+        /* CSS kodunuz burada aynen kalacak veya ayrı bir .css dosyasına taşınacak */
+        :root {
+            --primary-color: #00796b;
+            --secondary-color: #00acc1;
+            --accent-color: #ff7043;
+            --light-color: #e0f7fa;
+            --dark-color: #333;
+            --white: #ffffff;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--dark-color);
+            line-height: 1.7;
+            background-color: var(--light-color); /* Açık renk arka plan */
+            padding-top: 80px;
+        }
+
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Inter', sans-serif;
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+
+        .logo a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark-color);
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .register {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .register:hover {
+            background-color: #00695c;
+            transform: translateY(-2px);
+        }
+
+        .menu-icon {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Dashboard Specific Styles */
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            background: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .dashboard-header h1 {
+            font-family: 'Inter', sans-serif;
+            color: var(--primary-color);
+        }
+
+        .dashboard-tabs {
+            margin-bottom: 20px;
+        }
+
+        .tab-content {
+            padding: 20px 0;
+        }
+
+        .card {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 8px 8px 0 0;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .appointment-item, .feedback-item {
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+        }
+
+        .appointment-item:last-child, .feedback-item:last-child {
+            border-bottom: none;
+        }
+
+        .appointment-status-badge {
+            font-size: 0.85em;
+            padding: 0.4em 0.8em;
+            border-radius: 0.3em;
+            margin-left: 10px;
+        }
+
+        .status-pending_confirmation { background-color: var(--warning-color); color: #fff; }
+        .status-confirmed { background-color: var(--success-color); color: #fff; }
+        .status-completed { background-color: var(--info-color); color: #fff; }
+        .status-cancelled { background-color: var(--error-color); color: #fff; }
+
+        .rating-stars {
+            font-size: 1.2rem;
+            color: var(--warning-color);
+        }
+
+        /* Yeni slot ekleme alanları */
+        .time-slot-input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .time-slot-input-group input[type="time"] {
+            flex: 1;
+        }
+        .time-slot-input-group .form-control {
+            max-width: 120px; /* Saati seçme kutularını küçült */
+        }
+
+
+        /* Footer */
+        footer {
+            background-color: var(--dark-color);
+            color: var(--white);
+            padding: 50px 5% 20px;
+            margin-top: 50px;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+        }
+
+        .social-media {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .social-media a {
+            color: var(--white);
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+
+        .social-media a:hover {
+            color: var(--accent-color);
+        }
+
+        .footer-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-nav li {
+            margin-bottom: 10px;
+        }
+
+        .footer-nav li a {
+            color: var(--white);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-nav li a:hover {
+            color: var(--accent-color);
+        }
+
+        .copyright {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: 30px;
+        }
+
+        .copyright .us {
+            color: var(--accent-color);
+            font-weight: 700;
+        }
+
+        /* Responsive Tasarım */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: var(--white);
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .menu-icon {
+                display: block;
+            }
+            .dashboard-container {
+                margin: 20px auto;
+                padding: 15px;
+            }
+            .nav-tabs .nav-link {
+                font-size: 0.9rem;
+                padding: 0.8rem 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">FINWISE</a></div>
+        <nav class="nav-links" id="nav-links">
+            
+        </nav>
+        <div class="menu-icon" id="menu-icon">☰</div>
+    </header>
+
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1>Danışman Paneli</h1>
+            <p>Hoş geldiniz, <span id="advisorName"></span>!</p>
+        </div>
+
+        <ul class="nav nav-tabs dashboard-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="appointments-tab" data-bs-toggle="tab" data-bs-target="#appointments" type="button" role="tab" aria-controls="appointments" aria-selected="true">Randevularım</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="schedule-tab" data-bs-toggle="tab" data-bs-target="#schedule" type="button" role="tab" aria-controls="schedule" aria-selected="false">Takvimim</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="feedback-tab" data-bs-toggle="tab" data-bs-target="#feedback" type="button" role="tab" aria-controls="feedback" aria-selected="false">Geri Bildirimler</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="appointments" role="tabpanel" aria-labelledby="appointments-tab">
+                <div class="card">
+                    <div class="card-header">
+                        Randevu Listesi
+                        <div class="float-end">
+                            <select class="form-select form-select-sm d-inline-block w-auto" id="appointmentStatusFilter">
+                                <option value="">Tümü</option>
+                                <option value="pending_confirmation">Onay Bekleyenler</option>
+                                <option value="confirmed">Onaylananlar</option>
+                                <option value="completed">Tamamlananlar</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="appointmentsList">
+                            <p class="text-center text-muted" id="loadingAppointments">Randevular yükleniyor...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="schedule" role="tabpanel" aria-labelledby="schedule-tab">
+                <div class="card">
+                    <div class="card-header">Takvim Yönetimi</div>
+                    
+
+                        <hr>
+
+                        <h5>Takvim Slotlarını Düzenle</h5>
+                        <p class="text-muted small">Aşağıda tarihleri ve saat aralıklarını seçerek takviminizi düzenleyebilirsiniz. Mevcut slotlar getirilecektir.</p>
+                        
+                        <div class="mb-3">
+                            <label for="scheduleDatePicker" class="form-label">Tarih Seçin</label>
+                            <input type="text" class="form-control" id="scheduleDatePicker" placeholder="Tarih veya tarih aralığı seçin...">
+                            <small class="form-text text-muted">Birden fazla tarih seçmek için Ctrl/Cmd tuşunu basılı tutun.</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Saat Aralıkları</label>
+                            <div id="timeSlotsContainer">
+                                <div class="time-slot-input-group">
+                                    <input type="time" class="form-control start-time" value="09:00">
+                                    <span>-</span>
+                                    <input type="time" class="form-control end-time" value="10:00">
+                                    <button type="button" class="btn btn-sm btn-danger remove-slot-btn" style="display: none;"><i class="fas fa-minus-circle"></i></button>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-success mt-2" id="addTimeSlotBtn"><i class="fas fa-plus-circle"></i> Zaman Aralığı Ekle</button>
+                        </div>
+                        
+                        <button class="btn btn-primary" id="updateScheduleBtn">Takvimi Güncelle</button>
+                        <div id="scheduleUpdateMessage" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="feedback" role="tabpanel" aria-labelledby="feedback-tab">
+                <div class="card">
+                    <div class="card-header">Geri Bildirimleriniz</div>
+                    <div class="card-body">
+                        <div id="feedbackList">
+                            <p class="text-center text-muted" id="loadingFeedback">Geri bildirimler yükleniyor...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="appointmentDetailModal" tabindex="-1" aria-labelledby="appointmentDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="appointmentDetailModalLabel">Randevu Detayları</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Danışan:</strong> <span id="modalUserName"></span> <span id="modalUserLastName"></span></p>
+                    <p><strong>Tarih:</strong> <span id="modalAppointmentDate"></span></p>
+                    <p><strong>Saat:</strong> <span id="modalAppointmentTime"></span></p>
+                    <p><strong>Durum:</strong> <span id="modalAppointmentStatus" class="badge"></span></p>
+                    <p><strong>Konu:</strong> <span id="modalAppointmentTopic"></span></p>
+                    <p><strong>Görüşme Tipi:</strong> <span id="modalConsultationType"></span></p>
+                    <p><strong>Notlar:</strong> <span id="modalAppointmentNotes"></span></p>
+                    <div id="modalMeetingLinkContainer" class="mb-3" style="display: none;">
+                        <strong>Toplantı Linki:</strong> <a href="#" id="modalMeetingLink" target="_blank">Toplantıya Katıl</a>
+                    </div>
+                    <hr>
+                    <h6 class="mt-4">Randevu Durumunu Güncelle:</h6>
+                    <div class="d-flex align-items-center">
+                        <select class="form-select w-auto me-3" id="updateAppointmentStatus">
+                            <option value="">Durum Seçin</option>
+                            <option value="confirmed">Onayla</option>
+                            <option value="completed">Tamamlandı Olarak İşaretle</option>
+                        </select>
+                        <input type="url" class="form-control me-3" id="updateMeetingLink" placeholder="Toplantı linki (opsiyonel)">
+                        <button class="btn btn-primary" id="saveAppointmentUpdateBtn">Kaydet</button>
+                    </div>
+                    <div id="updateStatusMessage" class="mt-2 text-success"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-nav">
+                <h3>Site Haritası</h3>
+                <ul>
+                    <li><a href="index.html">Ana Sayfa</a></li>
+                    <li><a href="about_us.html">Hakkımızda</a></li>
+                    <li><a href="financial_literacy.html">Finansal Okuryazarlık</a></li>
+                    <li><a href="budget_planner.html">Bütçe Planlayıcısı</a></li>
+                    <li><a href="danismanlik.html">Danışmanlık Hizmeti</a></li>
+                </ul>
+            </div>
+            <div class="footer-nav">
+                <h3>İletişim</h3>
+                <ul>
+                    <li>Telefon: +90 123 456 7890</li>
+                    <li>Email: info@finwise.com</li>
+                    <li>Adres: İstanbul, Türkiye</li>
+                </ul>
+            </div>
+            <div class="footer-nav">
+                <h3>Sosyal Medya</h3>
+                <div class="social-media">
+                    <a href="#" aria-label="Facebook"><i class='bx bxl-facebook'></i></a>
+                    <a href="#" aria-label="Twitter"><i class='bx bxl-twitter'></i></a>
+                    <a href="#" aria-label="Instagram"><i class='bx bxl-instagram'></i></a>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2025 FINWISE | Tüm Hakları Saklıdır. <span class="us">FINWISE Ekibi</span>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/tr.js"></script>
+    <script>
+        // API Base URL (Flask uygulamanızın çalıştığı adres)
+        const API_BASE_URL = 'http://localhost:5000/consultancy'; // Kendi Flask sunucunuzun adresine göre güncelleyin!
+
+        function formatDate(isoString) {
+    const date = new Date(isoString);
+    const day = date.toLocaleDateString('tr-TR');
+    const time = date.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+    return `${day} ${time}`;
+}
+
+        // Kullanıcı yetkilendirme token'ını getiren fonksiyon
+        function getToken() {
+            return localStorage.getItem('authToken');
+        }
+
+        // Danışman adı için placeholder
+        let advisorFirstName = "Danışman"; // API'den çekilecek
+
+        // Randevu Detay Modal'ı için global değişken
+        let currentAppointmentId = null;
+        let advisorTimeZone = "Europe/Istanbul"; // Varsayılan zaman dilimi, backend'den çekilecek
+
+        // Takvim Flatpickr instance'ı
+        let scheduleFlatpickrInstance;
+
+        // Yetkilendirme kontrolü ve danışman adını set etme
+        async function initializeDashboard() {
+            const token = getToken();
+            const userRole = localStorage.getItem('userType');
+            const userFirstName = localStorage.getItem('userFirstName');
+
+            if (!token || userRole !== 'advisor') {
+                alert("Danışman paneline erişmek için danışman olarak giriş yapmalısınız.");
+                window.location.href = 'index.html'; // Giriş sayfasına yönlendir
+                return;
+            }
+            advisorFirstName = userFirstName || "Danışman";
+            document.getElementById('advisorName').textContent = advisorFirstName;
+
+            // İlk olarak randevuları yükle
+            await fetchAppointments();
+
+            // Flatpickr'ı başlat
+            scheduleFlatpickrInstance = flatpickr("#scheduleDatePicker", {
+                mode: "multiple",
+                dateFormat: "Y-m-d",
+                locale: "tr", // Türkçe lokalizasyon
+                minDate: "today", // Bugünden önceki tarihleri seçtirme
+                onChange: function(selectedDates, dateStr, instance) {
+                    // Tarih seçimi değiştiğinde, mevcut slotları filtreleyebiliriz.
+                    // Şimdilik sadece Flatpickr'ın tarihleri seçtiğini görelim.
+                }
+            });
+
+            // İlk zaman slotu ekleme düğmesini gizle
+            document.querySelector('.time-slot-input-group .remove-slot-btn').style.display = 'none';
+
+            // Zaman aralığı ekleme düğmesi dinleyicisi
+            document.getElementById('addTimeSlotBtn').addEventListener('click', addTimeSlotInput);
+
+            // Mevcut zaman slotları için remove düğmeleri
+            document.getElementById('timeSlotsContainer').addEventListener('click', (event) => {
+                if (event.target.classList.contains('remove-slot-btn') || event.target.closest('.remove-slot-btn')) {
+                    const btn = event.target.closest('.remove-slot-btn');
+                    btn.closest('.time-slot-input-group').remove();
+                    updateRemoveButtonsVisibility(); // Buton görünürlüğünü güncelle
+                }
+            });
+
+            // Takvimi güncelleme düğmesi dinleyicisi
+            document.getElementById('updateScheduleBtn').addEventListener('click', updateConsultantSchedule);
+
+            // Randevu durumu filtreleme
+            document.getElementById('appointmentStatusFilter').addEventListener('change', fetchAppointments);
+
+            // Randevu detay modalı açıldığında güncelleme butonu dinleyicisi
+            document.getElementById('saveAppointmentUpdateBtn').addEventListener('click', updateAppointment);
+
+       
+            // Geri bildirim sekmesine tıklandığında geri bildirimleri çek
+            document.getElementById('feedback-tab').addEventListener('shown.bs.tab', fetchFeedback);
+
+            // Logout butonu
+            document.getElementById('logoutButton').addEventListener('click', () => {
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('userType');
+                localStorage.removeItem('userId');
+                localStorage.removeItem('userFirstName');
+                window.location.href = 'index.html';
+            });
+        }
+
+        // Genel API çağrıları için yardımcı fonksiyon
+        async function callApi(endpoint, method = 'GET', body = null) {
+            const token = getToken();
+            if (!token) {
+                throw new Error("Kimlik doğrulama token'ı bulunamadı. Lütfen giriş yapın.");
+            }
+
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            };
+
+            const options = {
+                method,
+                headers,
+            };
+
+            if (body) {
+                options.body = JSON.stringify(body);
+            }
+
+            const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ errorMessage: "Bilinmeyen API hatası." }));
+                if (response.status === 401 || response.status === 403) {
+                     // Token geçersiz veya yetkisiz erişim durumunda kullanıcıyı login sayfasına yönlendir
+                    alert(errorData.errorMessage || `Erişim Hatası: ${response.status}. Lütfen tekrar giriş yapın.`);
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('userType');
+                    localStorage.removeItem('userId');
+                    localStorage.removeItem('userFirstName');
+                    window.location.href = 'login.html';
+                }
+                throw new Error(errorData.errorMessage || `API Hatası: ${response.status}`);
+            }
+            return response.json();
+        }
+
+        // Randevuları Çeken Fonksiyon
+        async function fetchAppointments() {
+            const appointmentsListDiv = document.getElementById('appointmentsList');
+            const loadingAppointments = document.getElementById('loadingAppointments');
+            loadingAppointments.style.display = 'block';
+            appointmentsListDiv.innerHTML = ''; // Önceki listeyi temizle
+
+            const statusFilter = document.getElementById('appointmentStatusFilter').value;
+            let endpoint = `/advisor/me/appointments`;
+            if (statusFilter) {
+                endpoint += `?status=${statusFilter}`;
+            }
+
+            try {
+                const appointments = await callApi(endpoint);
+                loadingAppointments.style.display = 'none';
+
+                if (appointments.length === 0) {
+                    appointmentsListDiv.innerHTML = '<p class="text-center text-muted">Mevcut randevu bulunamadı.</p>';
+                    return;
+                }
+
+                appointments.forEach(app => {
+                    const appointmentDiv = document.createElement('div');
+                    appointmentDiv.classList.add('appointment-item', 'd-flex', 'justify-content-between', 'align-items-center');
+                    appointmentDiv.innerHTML = `
+    <h6>Randevu #${app.appointment_id}</h6>
+    <p><strong>Kullanıcı:</strong> ${app.userFirstName} ${app.userLastName}</p>
+    <p><strong>Danışman:</strong> ${app.consultantFirstName} ${app.consultantLastName}</p>
+    <p><strong>Zaman:</strong> ${formatDate(app.start_time)} - ${formatDate(app.end_time)}</p>
+    <p><strong>Durum:</strong> ${app.status}</p>
+`;
+                    appointmentsListDiv.appendChild(appointmentDiv);
+                });
+
+                document.querySelectorAll('.view-detail-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const appId = this.dataset.id;
+                        fetchAppointmentDetails(appId);
+                    });
+                });
+
+            } catch (error) {
+                console.error('Randevular çekilirken hata oluştu:', error);
+                loadingAppointments.style.display = 'none';
+                appointmentsListDiv.innerHTML = `<p class="text-center text-danger">Randevular yüklenirken bir hata oluştu: ${error.message}</p>`;
+            }
+        }
+
+        // Randevu Detaylarını Çeken Fonksiyon
+        async function fetchAppointmentDetails(appointmentId) {
+            currentAppointmentId = appointmentId; // Global değişkene ata
+            try {
+                const appointment = await callApi(`/advisor/me/appointments/${appointmentId}`);
+
+                document.getElementById('modalUserName').textContent = appointment.userFirstName;
+                document.getElementById('modalUserLastName').textContent = appointment.userLastName;
+                document.getElementById('modalAppointmentDate').textContent = new Date(appointment.startTime).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+                document.getElementById('modalAppointmentTime').textContent = `${new Date(appointment.startTime).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })} - ${new Date(appointment.endTime).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}`;
+                
+                const statusBadge = document.getElementById('modalAppointmentStatus');
+                statusBadge.textContent = getStatusText(appointment.status);
+                statusBadge.className = `badge ${getStatusBadgeClass(appointment.status)}`;
+                
+                document.getElementById('modalAppointmentTopic').textContent = appointment.topic || 'Belirtilmemiş';
+                document.getElementById('modalConsultationType').textContent = getConsultationTypeText(appointment.consultation_type);
+                document.getElementById('modalAppointmentNotes').textContent = appointment.notes || 'Yok';
+
+                const meetingLinkContainer = document.getElementById('modalMeetingLinkContainer');
+                const meetingLink = document.getElementById('modalMeetingLink');
+                if (appointment.meetingLink) {
+                    meetingLink.href = appointment.meetingLink;
+                    meetingLinkContainer.style.display = 'block';
+                } else {
+                    meetingLinkContainer.style.display = 'none';
+                }
+                
+                // Güncelleme formunu başlangıç durumu
+                document.getElementById('updateAppointmentStatus').value = ''; // Seçimi sıfırla
+                document.getElementById('updateMeetingLink').value = appointment.meetingLink || ''; // Mevcut linki doldur
+                document.getElementById('updateStatusMessage').textContent = ''; // Mesajı temizle
+
+                const appointmentDetailModal = new bootstrap.Modal(document.getElementById('appointmentDetailModal'));
+                appointmentDetailModal.show();
+
+            } catch (error) {
+                console.error('Randevu detayları çekilirken hata oluştu:', error);
+                alert('Randevu detayları yüklenirken bir hata oluştu: ' + error.message);
+            }
+        }
+
+        // Randevu Güncelleme Fonksiyonu
+        async function updateAppointment() {
+            const newStatus = document.getElementById('updateAppointmentStatus').value;
+            const newMeetingLink = document.getElementById('updateMeetingLink').value;
+            const updateStatusMessage = document.getElementById('updateStatusMessage');
+            updateStatusMessage.textContent = ''; // Mesajı temizle
+            updateStatusMessage.classList.remove('text-success', 'text-danger');
+
+            if (!currentAppointmentId) {
+                alert("Güncellenecek randevu seçili değil.");
+                return;
+            }
+
+            // Durum veya linkten en az biri girilmeli
+            if (!newStatus && newMeetingLink.trim() === '') {
+                updateStatusMessage.textContent = "Güncellenecek bir durum veya link girin.";
+                updateStatusMessage.classList.add('text-danger');
+                return;
+            }
+
+            const requestBody = {};
+            if (newStatus) {
+                requestBody.status = newStatus;
+            }
+            // Meeting linki boş string ise null olarak gönderilmeli
+            // Eğer input boşsa null olarak gönder, doluysa değerini gönder
+            requestBody.meetingLink = newMeetingLink.trim() === '' ? null : newMeetingLink;
+            
+
+            try {
+                const updatedAppointment = await callApi(`/advisor/me/appointments/${currentAppointmentId}`, 'PATCH', requestBody);
+                updateStatusMessage.textContent = 'Randevu başarıyla güncellendi!';
+                updateStatusMessage.classList.add('text-success');
+
+                // Modal'daki görünümü güncelle
+                document.getElementById('modalAppointmentStatus').textContent = getStatusText(updatedAppointment.status);
+                document.getElementById('modalAppointmentStatus').className = `badge ${getStatusBadgeClass(updatedAppointment.status)}`;
+                
+                if (updatedAppointment.meetingLink) {
+                    document.getElementById('modalMeetingLink').href = updatedAppointment.meetingLink;
+                    document.getElementById('modalMeetingLinkContainer').style.display = 'block';
+                } else {
+                    document.getElementById('modalMeetingLinkContainer').style.display = 'none';
+                }
+
+                // Ana randevu listesini yenile
+                fetchAppointments();
+
+            } catch (error) {
+                console.error('Randevu güncellenirken hata oluştu:', error);
+                updateStatusMessage.textContent = 'Randevu güncellenirken hata: ' + error.message;
+                updateStatusMessage.classList.add('text-danger');
+            }
+        }
+
+        // --- Takvim Yönetimi Fonksiyonları ---
+
+        // Yeni zaman slotu input grubu ekler
+        function addTimeSlotInput(startTime = '09:00', endTime = '10:00') {
+            const container = document.getElementById('timeSlotsContainer');
+            const newSlot = document.createElement('div');
+            newSlot.classList.add('time-slot-input-group');
+            newSlot.innerHTML = `
+                <input type="time" class="form-control start-time" value="${startTime}">
+                <span>-</span>
+                <input type="time" class="form-control end-time" value="${endTime}">
+                <button type="button" class="btn btn-sm btn-danger remove-slot-btn"><i class="fas fa-minus-circle"></i></button>
+            `;
+            container.appendChild(newSlot);
+            updateRemoveButtonsVisibility();
+        }
+
+        // Remove butonlarının görünürlüğünü günceller (en az 1 tane kalmalı)
+        function updateRemoveButtonsVisibility() {
+            const removeButtons = document.querySelectorAll('#timeSlotsContainer .remove-slot-btn');
+            if (removeButtons.length <= 1) {
+                removeButtons.forEach(btn => btn.style.display = 'none');
+            } else {
+                removeButtons.forEach(btn => btn.style.display = 'block');
+            }
+        }
+
+        
+        // Takvim slotlarını tarihe göre gruplandırır
+        function groupScheduleByDate(slots) {
+            const grouped = {};
+            slots.forEach(slot => {
+                const date = new Date(slot.startTime).toISOString().split('T')[0]; // Sadece tarihi al
+                if (!grouped[date]) {
+                    grouped[date] = [];
+                }
+                grouped[date].push(slot);
+            });
+            return grouped;
+        }
+
+        // Editor alanlarını (Flatpickr ve saat slotları) mevcut takvim verileriyle doldurur
+        function populateScheduleEditor(slots) {
+            // Flatpickr için tarihleri hazırla
+            const datesToSelect = [];
+            const uniqueDates = new Set();
+            slots.forEach(slot => {
+                const date = new Date(slot.startTime).toISOString().split('T')[0];
+                uniqueDates.add(date);
+            });
+            datesToSelect.push(...Array.from(uniqueDates));
+            
+            // Flatpickr'ı güncelle
+            scheduleFlatpickrInstance.setDate(datesToSelect, true);
+
+            // Saat slotlarını temizle ve doldur
+            const timeSlotsContainer = document.getElementById('timeSlotsContainer');
+            timeSlotsContainer.innerHTML = ''; // Mevcut tüm slotları temizle
+            
+            if (slots.length > 0) {
+                // Her bir mevcut slot için yeni bir input grubu ekle
+                slots.forEach(slot => {
+                    const startTime = new Date(slot.startTime).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false });
+                    const endTime = new Date(slot.endTime).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false });
+                    addTimeSlotInput(startTime, endTime);
+                });
+            } else {
+                addTimeSlotInput(); // Hiç slot yoksa varsayılan bir tane ekle
+            }
+            updateRemoveButtonsVisibility();
+        }
+
+        // Takvimi Güncelleme Fonksiyonu (PUT method)
+        async function updateConsultantSchedule() {
+    const selectedDates = scheduleFlatpickrInstance.selectedDates;
+    const timeSlotInputs = document.querySelectorAll('#timeSlotsContainer .time-slot-input-group');
+    const scheduleUpdateMessage = document.getElementById('scheduleUpdateMessage');
+    scheduleUpdateMessage.textContent = '';
+    scheduleUpdateMessage.classList.remove('text-success', 'text-danger');
+
+    if (selectedDates.length === 0) {
+        scheduleUpdateMessage.textContent = "Lütfen takvim için en az bir tarih seçin.";
+        scheduleUpdateMessage.classList.add('text-danger');
+        return;
+    }
+
+    const availabilitySlots = [];
+    let hasError = false;
+
+    // Saat slotlarını kontrol et
+    if (timeSlotInputs.length === 0) {
+        scheduleUpdateMessage.textContent = "En az bir zaman aralığı eklemelisiniz.";
+        scheduleUpdateMessage.classList.add('text-danger');
+        return;
+    }
+
+    // Tarih ve saatleri işle
+    for (const date of selectedDates) {
+        for (const group of timeSlotInputs) {
+            const startTimeStr = group.querySelector('.start-time').value;
+            const endTimeStr = group.querySelector('.end-time').value;
+
+            if (!startTimeStr || !endTimeStr) {
+                hasError = true;
+                scheduleUpdateMessage.textContent = "Tüm saat aralıkları için başlangıç ve bitiş saati girilmelidir.";
+                scheduleUpdateMessage.classList.add('text-danger');
+                break;
+            }
+
+            // Başlangıç saati bitişten sonra mı?
+            if (startTimeStr >= endTimeStr) {
+                hasError = true;
+                scheduleUpdateMessage.textContent = "Başlangıç saati bitiş saatinden önce olmalıdır.";
+                scheduleUpdateMessage.classList.add('text-danger');
+                break;
+            }
+
+            try {
+                const startDate = new Date(date);
+                const endDate = new Date(date);
+
+                const [startHour, startMinute] = startTimeStr.split(':').map(Number);
+                const [endHour, endMinute] = endTimeStr.split(':').map(Number);
+
+                startDate.setHours(startHour, startMinute, 0, 0);
+                endDate.setHours(endHour, endMinute, 0, 0);
+
+                availabilitySlots.push({
+                    start_time: startDate.toISOString(),
+                    end_time: endDate.toISOString()
+                });
+            } catch (e) {
+                hasError = true;
+                console.error("Zaman aralığı parse hatası:", e);
+                scheduleUpdateMessage.textContent = `Geçersiz saat formatı: ${startTimeStr}-${endTimeStr}`;
+                scheduleUpdateMessage.classList.add('text-danger');
+                break;
+            }
+        }
+        if (hasError) break;
+    }
+
+    if (hasError) return;
+
+    const updateBtn = document.getElementById('updateScheduleBtn');
+    updateBtn.disabled = true;
+    updateBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Güncelleniyor...';
+
+    try {
+        const response = await callApi(`/advisor/me/schedule`, 'PUT', {
+            availabilitySlots: availabilitySlots,
+            timeZone: advisorTimeZone
+        });
+
+        scheduleUpdateMessage.textContent = 'Takvim başarıyla güncellendi!';
+        scheduleUpdateMessage.classList.add('text-success');
+
+        // UI'yı temizle
+        scheduleFlatpickrInstance.clear();
+        document.getElementById('timeSlotsContainer').innerHTML = '';
+        addTimeSlotInput(); // Varsayılan bir slot ekle
+
+       
+
+    } catch (error) {
+        console.error('Hata detayı:', error);
+        let errorMessage = error.message;
+        
+        // Backend'den özel hata mesajı gelmişse onu göster
+        if (error.response && error.response.data && error.response.data.message) {
+            errorMessage = error.response.data.message;
+        }
+        
+        scheduleUpdateMessage.textContent = 'Hata: ' + errorMessage;
+        scheduleUpdateMessage.classList.add('text-danger');
+    } finally {
+        updateBtn.disabled = false;
+        updateBtn.textContent = 'Takvimi Güncelle';
+    }
+}
+
+        // Geri Bildirimleri Çeken Fonksiyon
+        async function fetchFeedback() {
+            const feedbackListDiv = document.getElementById('feedbackList');
+            const loadingFeedback = document.getElementById('loadingFeedback');
+            loadingFeedback.style.display = 'block';
+            feedbackListDiv.innerHTML = ''; // Önceki listeyi temizle
+
+            try {
+                const feedback = await callApi(`/advisor/me/feedback`);
+                loadingFeedback.style.display = 'none';
+
+                if (feedback.length === 0) {
+                    feedbackListDiv.innerHTML = '<p class="text-center text-muted">Mevcut geri bildirim bulunamadı.</p>';
+                    return;
+                }
+
+                feedback.forEach(fb => {
+                    const feedbackDiv = document.createElement('div');
+                    feedbackDiv.classList.add('feedback-item');
+                    feedbackDiv.innerHTML = `
+                        <h6>Danışan: ${fb.userFirstName || 'Anonim'} ${fb.userLastName || ''}</h6>
+                        <p class="mb-1">
+                            <span class="rating-stars">${'⭐'.repeat(fb.rating)}</span>
+                            <span class="text-muted small ms-2">${new Date(fb.createdAt).toLocaleDateString('tr-TR')}</span>
+                        </p>
+                        <p class="mb-0">${fb.comment || 'Yorum yapılmamış.'}</p>
+                    `;
+                    feedbackListDiv.appendChild(feedbackDiv);
+                });
+
+            } catch (error) {
+                console.error('Geri bildirimler çekilirken hata oluştu:', error);
+                loadingFeedback.style.display = 'none';
+                feedbackListDiv.innerHTML = `<p class="text-center text-danger">Geri bildirimler yüklenirken bir hata oluştu: ${error.message}</p>`;
+            }
+        }
+
+
+        // Durum metinleri ve stil sınıfları için yardımcı fonksiyonlar
+        function getStatusText(status) {
+            switch (status) {
+                case 'pending_confirmation': return 'Onay Bekliyor';
+                case 'confirmed': return 'Onaylandı';
+                case 'completed': return 'Tamamlandı';
+                default: return 'Bilinmiyor';
+            }
+        }
+
+        function getStatusBadgeClass(status) {
+            switch (status) {
+                case 'pending_confirmation': return 'status-pending_confirmation';
+                case 'confirmed': return 'status-confirmed';
+                case 'completed': return 'status-completed';
+                default: return 'bg-secondary';
+            }
+        }
+
+        function getConsultationTypeText(type) {
+            switch (type) {
+                case 'online': return 'Online';
+                case 'in_person': return 'Yüz Yüze';
+                case 'phone': return 'Telefon';
+                default: return 'Belirtilmemiş';
+            }
+        }
+
+        // Sayfa yüklendiğinde dashboard'ı başlat
+        document.addEventListener('DOMContentLoaded', initializeDashboard);
+    </script>
+    
+</body>
+</html>

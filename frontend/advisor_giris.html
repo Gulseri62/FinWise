@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FINWISE - Giriş Sayfası</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Coiny&family=Sono:wght@400;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  />
+  <style>
+    :root {
+      --primary-color: #00796b;
+      --secondary-color: #00acc1;
+      --accent-color: #ff7043;
+      --light-color: #e0f7fa;
+      --dark-color: #333;
+      --white: #ffffff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--dark-color);
+      line-height: 1.7;
+      background-color: #f9f9f9;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background-color: var(--white);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+      padding: 15px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-family: 'Inter', sans-serif;
+      font-size: 2rem;
+      color: var(--primary-color);
+    }
+
+    .logo a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--dark-color);
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary-color);
+    }
+
+    .register {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .register:hover {
+      background-color: #00695c;
+      transform: translateY(-2px);
+    }
+
+    .register a {
+      color: white;
+      text-decoration: none;
+    }
+
+    .menu-icon {
+      display: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    /* Ana içerik */
+    .main-content {
+      padding: 120px 5% 80px;
+      max-width: 600px;
+      margin: 0 auto;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    h1 {
+      font-family: 'Inter', sans-serif;
+      color: var(--primary-color);
+      font-size: 3rem;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    h1::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -10px;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background-color: var(--accent-color);
+      border-radius: 2px;
+    }
+
+    p {
+      font-size: 1.2rem;
+      color: var(--dark-color);
+      margin-bottom: 40px;
+    }
+
+    /* Footer */
+    footer {
+      background-color: var(--dark-color);
+      color: var(--white);
+      padding: 40px 5% 20px;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .social-media {
+      margin-bottom: 15px;
+    }
+
+    .social-media a {
+      color: var(--white);
+      font-size: 1.5rem;
+      margin: 0 10px;
+      transition: color 0.3s;
+    }
+
+    .social-media a:hover {
+      color: var(--accent-color);
+    }
+
+    .copyright .us {
+      color: var(--accent-color);
+      font-weight: 700;
+    }
+
+    /* Responsive Tasarım */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        background-color: var(--white);
+        flex-direction: column;
+        padding: 20px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+
+      .menu-icon {
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo"><a href="about_us.html">FINWISE</a></div>
+    <nav class="nav-links" id="nav-links">
+      
+      
+      <button class="register"><a href="consultancy.html">Hesabım</a></button>
+    </nav>
+    <div class="menu-icon" id="menu-icon">☰</div>
+  </header>
+
+  <div class="main-content">
+    <h1>Hoş Geldiniz Sevgili Danışmanımız!</h1>
+    <p>Danışmanlık işlemlerine 'Hesabım' menüsünden erişebilirsin.</p>
+    
+  </div>
+
+  <footer>
+    <div class="footer-container">
+      <div class="social-media">
+        <a href="#"><i class='bx bxl-facebook'></i></a>
+        <a href="#"><i class='bx bxl-twitter'></i></a>
+        <a href="#"><i class='bx bxl-instagram'></i></a>
+        <a href="#"><i class='bx bxl-youtube'></i></a>
+      </div>
+      <div class="copyright">
+        <p>
+          Copyright &copy; 2026 FINWISE. Tüm hakları saklıdır. <span class="us">Designed by FINWISE Team</span>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Responsive menu toggle
+    const menuIcon = document.getElementById("menu-icon");
+    const navLinks = document.getElementById("nav-links");
+
+    menuIcon.addEventListener("click", () => {
+      navLinks.classList.toggle("active");
+    });
+  </script>
+</body>
+</html>
