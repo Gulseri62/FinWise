@@ -1,0 +1,420 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    display: flex;
+    background-image: url('dag.jpg');
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    padding-top: 80px; /* Header sabit olduğu için boşluk bırakıyoruz */
+}
+
+header {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    padding: 20px 50px;
+    background-color: rgba(255,255,255, .5);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    
+}
+
+.logo a {
+    color: white;
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    position: relative;
+}
+
+.nav-links a::after{
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    height: 1px;
+    width: 100%;
+    border-radius: 2px;
+    background: white;
+    transform: scaleX(0);
+    transition: transform .5s;
+}
+
+.nav-links a:hover::after{
+    transform: scaleX(1);
+}
+
+.register {
+    padding: 8px 16px;
+    background-color: transparent;
+    color: white;
+    border:2px solid white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: .5s;
+    
+}
+
+.register a{
+    
+   
+    text-decoration: none;
+
+}
+
+
+.register a:hover{
+    color: black;
+    text-decoration: none;
+}
+/* Hamburger menü simgesi */
+.menu-icon {
+    display: none;
+    font-size: 28px;
+    color: white;
+    cursor: pointer;
+}
+
+/* Responsive (mobil) */
+@media (max-width: 768px) {
+    .nav-links {
+        position: absolute;
+        top: 80px;
+        left: 0;
+        width: 100%;
+        
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        overflow: hidden;
+        max-height: 0;
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(15px);
+
+        border: 1px solid white;
+        transition: max-height 0.5s ease;
+        z-index: 9999;
+    }
+
+    .nav-links.active {
+        max-height: 500px;
+        padding-top: 20px; /* Üst kısmındaki boşluğu artırdık */
+        padding-bottom: 20px;
+        border: 2px solid white;
+        
+    }
+    
+
+    .menu-icon {
+        display: block;
+    }
+
+    .wrapper{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+.wrapper{
+    position: relative;
+    width: 400px;
+    height: 450px;
+    background: transparent;
+    border: 2px solid rgba(255,255,255, .5);
+    border-radius: 20px;
+    backdrop-filter: blur(2px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: height .2s ease;
+    overflow: hidden;
+    margin-top: 30px;
+    
+   
+}
+
+/* Wrapper boyutlarını değiştirelim */
+.wrapper {
+    position: relative;
+    width: 400px;
+    height: 450px; /* Başlangıç boyutu */
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, .5);
+    border-radius: 20px;
+    backdrop-filter: blur(2px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: height 0.2s ease;
+    overflow: hidden;
+    margin-top: 30px;
+}
+
+/* Yeni şifre formu büyürken wrapper da büyüsün */
+.wrapper.active {
+    height: 700px; /* Wrapper boyutunu arttıralım */
+}
+
+/* Formların geçişleri */
+.form-login,
+.form-register,
+.form-reset,
+.form-new-password {
+    transition: transform 0.3s ease, height 0.3s ease;
+}
+
+/* Yeni şifre formunun aktif olduğunda büyümesi için */
+.wrapper .form-new-password {
+    height: 400px; /* Başlangıç boyutu */
+}
+
+.wrapper.active .form-new-password {
+    height: 600px; /* Boyut arttırma */
+}
+
+.wrapper .form-login {
+    width: 100%;
+    padding: 40px;
+}
+.form-reset {
+    display: none;
+    height: 300px; /* Daha küçük bir yükseklik */
+    padding: 30px; /* Daha az iç boşluk */
+    width: 90%; /* Daha dar görünüm */
+    max-width: 300px; /* Mobilde uyumlu kalsın */
+    transition: transform 0.3s ease, height 0.3s ease;
+}
+
+
+.form-login h2, .form-register h2 {
+    text-align: center;
+    color: black;
+    font-size: 2em;
+}
+
+
+.input{
+    position: relative;
+    width: 100%;
+    height: 50px;
+    border-bottom: 2px solid black;
+    margin: 30px 0;
+}
+
+.input label{
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    transform: translateY(-50%);
+    font-size: 1em;
+    font-weight: 450;
+    transition: top 0.3s ease;
+    
+}
+
+.input input:focus~label,
+.input input:valid~label{
+    top: -5px;
+
+}
+
+.input input{
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;outline: none;
+    color: black;
+    font-weight: 600;
+    padding: 0 35px 0 5px;
+}
+
+.input .icon{
+    position: absolute;
+    right: 7px;
+    top:15px;
+}
+
+.remember-forgot{
+    justify-content: space-between;
+    display: flex;
+    margin: -15px 0 15px;
+
+}
+.remember-forgot label input{
+    accent-color: black;/*tikin olduğu kısmı siyah yapıyo*/
+    margin-right: 5px;
+}
+
+.remember-forgot a{
+    color: black;
+    text-decoration: none;
+}
+
+.remember-forgot a:hover{
+    text-decoration: underline;
+    transition: .5s;
+    color: blue;
+}
+
+.btn{
+    width: 100%;
+    height: 45px;
+    background: black;
+    border-radius: 6px;
+    cursor: pointer;
+    color: white;
+    font-weight: 500;
+    font-size: 1em;
+    border: black;
+    
+}
+
+.btn:hover{
+    background-color: white;
+    
+    color: black;
+}
+
+.login-register{
+    text-align: center;
+    font-weight: 500;
+    margin: 20px 0 10px;
+}
+
+.login-register p a{
+    font-weight: 600;
+}
+
+.login-register p a:hover{
+    color: blue;
+}
+
+.student-teacher{
+    display: flex;
+    justify-content: space-between
+}
+.student-teacher button{
+    margin-top: 5px;
+    padding: 10px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    border-radius: 5px;
+    background-color: black;
+    color: white;
+    cursor: pointer;
+    transition: .3 ease;
+}
+
+.student-teacher button:hover{
+    background-color: white;
+    color: black;
+
+}
+.student-teacher button.active {
+    background-color: lightblue;
+    color: black; 
+}
+
+
+
+
+
+
+footer{
+
+    background-color: black;
+}
+
+
+.footer-container{
+    width: 100%;
+    padding: 50px 30px 20px;
+   
+}
+
+.social-media{
+    display: flex;
+    justify-content: center;
+}
+
+.social-media a{
+    text-decoration: none;
+    padding: 10px;
+    background-color: white;
+    margin: 10px;
+    border-radius: 50%;
+ }
+
+ .social-media a ion-icon{
+    font-size: 2em;
+    color: black;
+    justify-content: center;
+    align-items: center;
+ }
+
+ footer{
+    margin-top: 150px;
+    width: 100%;
+ }
+
+ .footer-nav{
+    margin: 30px 0;
+ }
+
+ .footer-nav ul{
+    display: flex;
+    justify-content: center;
+    text-decoration: none;
+ }
+
+ .footer-nav ul li a{
+    color: white;
+    text-decoration: none;
+    margin:30px;
+    justify-content: space-between;
+
+ }
+
+ .copyright{
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+    color: aliceblue;
+ }
+
+ .copyright p{
+    justify-content: center;
+    
+ }
+ 

@@ -1,0 +1,288 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    display: flex;
+    background-image: url('dag.jpg');
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    padding-top: 80px; /* Header sabit olduğu için boşluk bırakıyoruz */
+}
+
+header {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    padding: 20px 50px;
+    background-color: rgba(255,255,255, .5);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    
+}
+
+.logo a {
+    color: white;
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    position: relative;
+}
+
+.nav-links a::after{
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    height: 1px;
+    width: 100%;
+    border-radius: 2px;
+    background: white;
+    transform: scaleX(0);
+    transition: transform .5s;
+}
+
+.nav-links a:hover::after{
+    transform: scaleX(1);
+}
+
+.register {
+    padding: 8px 16px;
+    background-color: transparent;
+    color: white;
+    border:2px solid white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: .5s;
+    
+}
+
+.register a{
+    
+   
+    text-decoration: none;
+
+}
+
+
+.register a:hover{
+    color: black;
+    text-decoration: none;
+}
+/* Hamburger menü simgesi */
+.menu-icon {
+    display: none;
+    font-size: 28px;
+    color: white;
+    cursor: pointer;
+}
+
+/* Responsive (mobil) */
+@media (max-width: 768px) {
+    .nav-links {
+        position: absolute;
+        top: 80px;
+        left: 0;
+        width: 100%;
+        
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        overflow: hidden;
+        max-height: 0;
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(15px);
+
+        border: 1px solid white;
+        transition: max-height 0.5s ease;
+        z-index: 9999;
+    }
+
+    .nav-links.active {
+        max-height: 500px;
+        padding-top: 20px; /* Üst kısmındaki boşluğu artırdık */
+        padding-bottom: 20px;
+        border: 2px solid white;
+        
+    }
+    
+
+    .menu-icon {
+        display: block;
+    }
+
+    .wrapper{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+
+.danismanlik_container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 sütun */
+    gap: 20px;
+    padding: 40px;
+    max-width: 1200px;
+    margin: auto;
+  }
+  
+  .danisman-kartı {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 20px;
+    transition: transform 0.3s ease;
+  }
+  
+  .danisman-kartı:hover {
+    transform: translateY(-5px);
+  }
+  
+  .danisman_image_name {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+  
+  .danisman_image {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    background-color: #ddd;
+  }
+  
+  .danisman_name h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+  }
+  
+  .danisman_name p {
+    margin: 5px 0 0;
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .danisman_ozellik {
+    margin-top: 10px;
+    font-size: 14px;
+    color: white;
+    
+  }
+  
+  
+   .danisman_alan{
+    background-color: blue;
+    margin: 2px;
+    border-radius: 5px;
+    text-decoration: none;
+   }
+   .danisman_alan a{
+    color: white;
+   }
+
+
+
+
+
+
+
+
+
+footer{
+
+    background-color: black;
+}
+
+
+.footer-container{
+    width: 100%;
+    padding: 50px 30px 20px;
+   
+}
+
+.social-media{
+    display: flex;
+    justify-content: center;
+}
+
+.social-media a{
+    text-decoration: none;
+    padding: 10px;
+    background-color: white;
+    margin: 10px;
+    border-radius: 50%;
+ }
+
+ .social-media a ion-icon{
+    font-size: 2em;
+    color: black;
+    justify-content: center;
+    align-items: center;
+ }
+
+ footer{
+    margin-top: 550px;
+    width: 100%;
+ }
+
+ .footer-nav{
+    margin: 30px 0;
+ }
+
+ .footer-nav ul{
+    display: flex;
+    justify-content: center;
+    text-decoration: none;
+ }
+
+ .footer-nav ul li a{
+    color: white;
+    text-decoration: none;
+    margin:30px;
+    justify-content: space-between;
+
+ }
+
+ .copyright{
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+    color: aliceblue;
+ }
+
+ .copyright p{
+    justify-content: center;
+    
+ }
