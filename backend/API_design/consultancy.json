@@ -1,0 +1,795 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Danışmanlık Modülü API",
+    "description": "Finansal danışmanlık hizmetleri için API. Danışman listeleme, randevu alma, takvim yönetimi ve puanlama.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.example.com/v1",
+      "description": "Geliştirme Sunucusu"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Consultants",
+      "description": "Genel kullanıcılar için danışman arama ve görüntüleme işlemleri."
+    },
+    {
+      "name": "Appointments",
+      "description": "Kullanıcıların ve danışmanların randevu yönetimi işlemleri."
+    },
+    {
+      "name": "Feedback & Ratings",
+      "description": "Kullanıcıların randevulara puan ve geri bildirim bırakma işlemleri."
+    },
+    {
+      "name": "Advisor Dashboard",
+      "description": "Danışmanlara özel randevu, takvim ve geri bildirim yönetimi."
+    }
+  ],
+  "paths": {
+    "/consultants": {
+      "get": {
+        "tags": ["Consultants"],
+        "summary": "Uygun danışmanların listesini getirir.",
+        "description": "Platformdaki aktif finansal danışmanların temel bilgilerini listeler. Bu versiyonda filtreleme özelliği bulunmamaktadır.",
+        "responses": {
+          "200": {
+            "description": "Danışman listesi başarıyla alındı.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ConsultantInfo"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Sunucu hatası.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/consultants/{consultantId}": {
+      "get": {
+        "tags": ["Consultants"],
+        "summary": "Belirli bir danışmanın detaylı profilini getirir.",
+        "parameters": [
+          {
+            "name": "consultantId",
+            "in": "path",
+            "required": true,
+            "description": "Danışmanın ID'si (Advisor ID)",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Danışman profili başarıyla alındı.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsultantProfile"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Danışman bulunamadı.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Sunucu hatası.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/consultants/{consultantId}/schedule": {
+      "get": {
+        "tags": ["Consultants"],
+        "summary": "Belirli bir danışmanın uygunluk takvimini getirir.",
+        "parameters": [
+          {
+            "name": "consultantId",
+            "in": "path",
+            "required": true,
+            "description": "Danışmanın ID'si",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Takvimin başlangıç tarihi (YYYY-MM-DD)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "Takvimin bitiş tarihi (YYYY-MM-DD)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Danışman takvimi başarıyla alındı.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsultantScheduleResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Danışman bulunamadı.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Sunucu hatası.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/appointments/request": {
+      "post": {
+        "tags": ["Appointments"],
+        "summary": "Kullanıcının bir danışmandan randevu talep etmesini sağlar.",
+        "description": "Giriş yapmış kullanıcılar bu endpoint üzerinden seçtikleri bir danışmanın uygun bir zaman dilimi için randevu talebinde bulunabilirler.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAppointmentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Randevu talebi başarıyla oluşturuldu.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppointmentDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Geçersiz istek (örn: validasyon hatası, slot dolu).",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "401": {
+            "description": "Yetkisiz erişim (kullanıcı giriş yapmamış).",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "404": {
+            "description": "Danışman veya zaman aralığı bulunamadı.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "409": {
+            "description": "Çakışma (örn: slot başkası tarafından rezerve edildi).",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "500": {
+            "description": "Sunucu hatası.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/users/me/appointments": {
+      "get": {
+        "tags": ["Appointments"],
+        "summary": "Giriş yapmış kullanıcının tüm randevularını listeler.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+           {
+            "name": "status",
+            "in": "query",
+            "description": "Randevu durumu (pending_confirmation, confirmed, completed)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["pending_confirmation", "confirmed", "completed"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Kullanıcının randevu listesi başarıyla alındı.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AppointmentDetails"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Yetkisiz erişim. Token eksik veya geçersiz.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "500": {
+            "description": "Sunucu hatası.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/users/me/appointments/{appointmentId}": {
+      "get": {
+        "tags": ["Appointments"],
+        "summary": "Kullanıcının belirli bir randevusunun detaylarını getirir.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "appointmentId",
+            "in": "path",
+            "required": true,
+            "description": "Randevu ID'si",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Randevu detayları başarıyla alındı.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppointmentDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Yetkisiz erişim. Token eksik veya geçersiz.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "403": {
+            "description": "Erişim reddedildi. Randevu kullanıcıya ait değil.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "404": {
+            "description": "Randevu bulunamadı.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "500": {
+            "description": "Sunucu hatası.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/appointments/{appointmentId}/rate": {
+      "post": {
+        "tags": ["Feedback & Ratings"],
+        "summary": "Kullanıcının tamamlanmış bir randevuyu puanlamasını sağlar.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "appointmentId",
+            "in": "path",
+            "required": true,
+            "description": "Puanlanacak randevunun ID'si",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RateAppointmentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Puanlama başarıyla kaydedildi.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Geçersiz istek (örn: randevu tamamlanmamış, zaten puanlanmış).",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "401": {
+            "description": "Yetkisiz erişim.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "403": {
+            "description": "Erişim reddedildi (randevu kullanıcıya ait değil).",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "404": {
+            "description": "Randevu bulunamadı.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "500": {
+            "description": "Sunucu hatası.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/advisor/me/appointments": {
+      "get": {
+        "tags": ["Advisor Dashboard", "Appointments"],
+        "summary": "Giriş yapmış danışmanın tüm randevularını listeler.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+         "parameters": [
+           {
+            "name": "status",
+            "in": "query",
+            "description": "Randevu durumu (pending_confirmation, confirmed, completed)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["pending_confirmation", "confirmed", "completed"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Danışmanın randevu listesi başarıyla alındı.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AppointmentDetails"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Yetkisiz erişim. Token eksik veya geçersiz.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "403": {
+            "description": "Erişim reddedildi. Kullanıcı danışman değil.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "500": {
+            "description": "Sunucu hatası.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/advisor/me/appointments/{appointmentId}": {
+      "get": {
+        "tags": ["Advisor Dashboard", "Appointments"],
+        "summary": "Danışmanın belirli bir randevusunun detaylarını getirir.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "appointmentId",
+            "in": "path",
+            "required": true,
+            "description": "Randevu ID'si",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Danışmanın randevu detayları başarıyla alındı.",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/AppointmentDetails"}}}
+          },
+          "401": {
+            "description": "Yetkisiz erişim. Token eksik veya geçersiz.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "403": {
+            "description": "Erişim reddedildi. Randevu bu danışmana ait değil veya kullanıcı danışman değil.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "404": {
+            "description": "Randevu bulunamadı.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "500": {
+            "description": "Sunucu hatası.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Advisor Dashboard", "Appointments"],
+        "summary": "Danışmanın bir randevunun durumunu veya detaylarını güncellemesi.",
+        "description": "Örn: Randevuyu onaylama ('confirmed'), tamamlandı olarak işaretleme ('completed'), toplantı linki ekleme.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "appointmentId",
+            "in": "path",
+            "required": true,
+            "description": "Güncellenecek randevu ID'si",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAppointmentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Randevu başarıyla güncellendi.",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/AppointmentDetails"}}}
+          },
+          "400": {
+            "description": "Geçersiz istek (örn: hatalı durum geçişi, validasyon hatası).",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "401": {
+            "description": "Yetkisiz erişim. Token eksik veya geçersiz.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "403": {
+            "description": "Erişim reddedildi. Randevu bu danışmana ait değil veya kullanıcı danışman değil.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "404": {
+            "description": "Randevu bulunamadı.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "500": {
+            "description": "Sunucu hatası.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/advisor/me/schedule": {
+      "get": {
+        "tags": ["Advisor Dashboard"],
+        "summary": "Giriş yapmış danışmanın kendi uygunluk takvimini getirir.",
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "Danışmanın uygunluk takvimi başarıyla alındı.",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ConsultantScheduleResponse"}}}
+          },
+          "401": {
+            "description": "Yetkisiz erişim. Token eksik veya geçersiz.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "403": {
+            "description": "Erişim reddedildi. Kullanıcı danışman değil.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "500": {
+            "description": "Sunucu hatası.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Advisor Dashboard"],
+        "summary": "Danışmanın kendi uygunluk takvimini güncellemesi.",
+        "description": "Belirli bir tarih aralığı için tüm uygunluk slotlarını ayarlar/üzerine yazar.",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateConsultantScheduleRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Takvim başarıyla güncellendi.",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ConsultantScheduleResponse"}}}
+          },
+          "400": {
+            "description": "Geçersiz istek (örn: validasyon hatası).",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "401": {
+            "description": "Yetkisiz erişim. Token eksik veya geçersiz.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "403": {
+            "description": "Erişim reddedildi. Kullanıcı danışman değil.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "500": {
+            "description": "Sunucu hatası.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/advisor/me/feedback": {
+      "get": {
+        "tags": ["Advisor Dashboard", "Feedback & Ratings"],
+        "summary": "Giriş yapmış danışmanın aldığı geri bildirimleri listeler.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Danışman geri bildirim listesi başarıyla alındı.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FeedbackDetails"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Yetkisiz erişim. Token eksik veya geçersiz.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "403": {
+            "description": "Erişim reddedildi. Kullanıcı danışman değil.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "500": {
+            "description": "Sunucu hatası.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ConsultantInfo": {
+        "type": "object",
+        "description": "Danışman listelerinde kullanılacak temel danışman bilgileri. Bu bilgiler doğrudan Advisor modelinden gelir.",
+        "properties": {
+          "id": {"type": "integer", "description": "Danışmanın sistemdeki benzersiz ID'si (Advisor ID).", "example": 101},
+          "firstName": {"type": "string", "description": "Danışmanın adı.", "example": "Ayşe"},
+          "lastName": {"type": "string", "description": "Danışmanın soyadı.", "example": "Danış"},
+          "email": {"type": "string", "format": "email", "description": "Danışmanın e-posta adresi.", "example": "ayse.danis@example.com"}
+        },
+        "required": ["id", "firstName", "lastName", "email"]
+      },
+      "ConsultantProfile": {
+        "type": "object",
+        "description": "Tek bir danışmanın detaylı profil bilgileri. Temel bilgilere ek olarak, ileride veritabanına eklenebilecek diğer detayları da içerir.",
+        "properties": {
+          "id": {"type": "integer", "description": "Danışmanın sistemdeki benzersiz ID'si.", "example": 101},
+          "firstName": {"type": "string", "description": "Danışmanın adı.", "example": "Ayşe"},
+          "lastName": {"type": "string", "description": "Danışmanın soyadı.", "example": "Danış"},
+          "email": {"type": "string", "format": "email", "description": "Danışmanın e-posta adresi.", "example": "ayse.danis@example.com"},
+          "specialization": {"type": "string", "nullable": true, "description": "Danışmanın uzmanlık alanı (örn: Bütçe Planlama). Veritabanına eklendikten sonra dolu gelecektir.", "example": "Bütçe Yönetimi"},
+          "bioDetailed": {"type": "string", "nullable": true, "description": "Danışmanın detaylı biyografisi. Veritabanına eklendikten sonra dolu gelecektir.", "example": "Kişisel finans ve bütçe yönetimi konusunda uzmanlaşmış, sertifikalı finansal danışmanım."},
+          "profileImageUrl": {"type": "string", "format": "url", "nullable": true, "description": "Danışmanın profil fotoğrafının URL'si. Veritabanına eklendikten sonra dolu gelecektir.", "example": "https://example.com/images/ayse.jpg"},
+          "experienceYears": {"type": "integer", "nullable": true, "description": "Danışmanın deneyim yılı. Veritabanına eklendikten sonra dolu gelecektir.", "example": 10},
+          
+          "averageRating": {"type": "number", "format": "float", "minimum": 0, "maximum": 5, "nullable": true, "description": "Danışmanın ortalama kullanıcı puanı (1-5). Hesaplandıktan sonra dolu gelecektir.", "example": 4.5}
+        },
+        "required": ["id", "firstName", "lastName", "email"]
+      },
+      "AvailabilitySlot": {
+        "type": "object",
+        "properties": {
+          "slotId": {"type": "string", "description": "Zaman aralığının benzersiz ID'si.", "example": "slot_20250515_1000_1050"},
+          "startTime": {"type": "string", "format": "date-time", "description": "Uygunluk başlangıç zamanı.", "example": "2025-05-15T10:00:00Z"},
+          "endTime": {"type": "string", "format": "date-time", "description": "Uygunluk bitiş zamanı.", "example": "2025-05-15T10:50:00Z"},
+          "status": {"type": "string", "enum": ["available", "booked"], "description": "Zaman aralığının durumu.", "example": "available"}
+        },
+        "required": ["slotId", "startTime", "endTime", "status"]
+      },
+      "ConsultantScheduleResponse": {
+        "type": "object",
+        "properties": {
+          "consultantId": {"type": "integer", "example": 101},
+          "timeZone": {"type": "string", "description": "Danışmanın takviminin ait olduğu zaman dilimi.", "example": "Europe/Istanbul"},
+          "availabilitySlots": {
+            "type": "array",
+            "items": {"$ref": "#/components/schemas/AvailabilitySlot"}
+          }
+        }
+      },
+       "UpdateConsultantScheduleRequest": {
+        "type": "object",
+        "properties": {
+          "timeZone": {"type": "string", "example": "Europe/Istanbul"},
+          "availabilitySlots": {
+            "type": "array",
+            "description": "Danışmanın belirli bir periyottaki tüm uygunluk zaman aralıkları. Bu işlem mevcut takvimi günceller.",
+            "items": {
+              "type": "object",
+              "properties": {
+                 "startTime": {"type": "string", "format": "date-time", "example": "2025-05-15T10:00:00Z"},
+                 "endTime": {"type": "string", "format": "date-time", "example": "2025-05-15T10:50:00Z"}
+              },
+              "required": ["startTime", "endTime"]
+            }
+          }
+        },
+        "required": ["timeZone", "availabilitySlots"]
+      },
+      "CreateAppointmentRequest": {
+        "type": "object",
+        "properties": {
+          "consultantId": {"type": "integer", "description": "Randevu alınmak istenen danışmanın ID'si.", "example": 101},
+          "slotId": {"type": "string", "description": "Danışmanın takviminden seçilen uygun zaman aralığının ID'si.", "example": "slot_20250515_1000_1050"},
+          "notes": {"type": "string", "nullable": true, "description": "Kullanıcının danışmana iletmek istediği notlar (opsiyonel).", "example": "Bütçe planlama konusunda yardım almak istiyorum."}
+        },
+        "required": ["consultantId", "slotId"]
+      },
+      "AppointmentDetails": {
+        "type": "object",
+        "properties": {
+          "appointmentId": {"type": "integer", "example": 5001},
+          "userId": {"type": "integer", "example": 1},
+          "userFirstName": {"type": "string", "example": "Ali"},
+          "userLastName": {"type": "string", "example": "Veli"},
+          "consultantId": {"type": "integer", "example": 101},
+          "consultantFirstName": {"type": "string", "example": "Ayşe"},
+          "consultantLastName": {"type": "string", "example": "Danış"},
+          "startTime": {"type": "string", "format": "date-time", "example": "2025-05-15T10:00:00Z"},
+          "endTime": {"type": "string", "format": "date-time", "example": "2025-05-15T10:50:00Z"},
+          "status": {"type": "string", "enum": ["pending_confirmation", "confirmed", "completed"], "description": "Randevunun güncel durumu.", "example": "confirmed"},
+          "notes": {"type": "string", "nullable": true},
+          "meetingLink": {"type": "string", "format": "url", "nullable": true, "example": "https://meet.example.com/session123"},
+          "createdAt": {"type": "string", "format": "date-time", "example": "2025-05-10T14:30:00Z"},
+          "updatedAt": {"type": "string", "format": "date-time", "example": "2025-05-10T14:35:00Z"}
+        }
+      },
+       "UpdateAppointmentRequest": {
+         "type": "object",
+         "description": "Danışmanın bir randevuyu güncellemek için göndereceği bilgiler.",
+         "properties": {
+           "status": {"type": "string", "enum": ["confirmed", "completed"], "nullable": true, "description": "Danışman tarafından güncellenecek randevu durumu (onaylama veya tamamlama)."},
+           "meetingLink": {"type": "string", "format": "url", "nullable": true, "description": "Online görüşme linki."}
+         }
+       },
+      "RateAppointmentRequest": {
+        "type": "object",
+        "properties": {
+          "rating": {"type": "integer", "minimum": 1, "maximum": 5, "description": "Verilen puan (1-5 arası).", "example": 5},
+          "comment": {"type": "string", "nullable": true, "description": "Puanlama yorumu (opsiyonel).", "example": "Çok yardımcı oldu, teşekkürler."}
+        },
+        "required": ["rating"]
+      },
+      "FeedbackDetails": {
+        "type": "object",
+        "properties": {
+          "feedbackId": {"type": "integer", "example": 201},
+          "appointmentId": {"type": "integer", "example": 5001},
+          "userId": {"type": "integer", "example": 1},
+          "userFirstName":{"type": "string", "example": "Ali"},
+          "consultantId": {"type": "integer", "example": 101},
+          "rating": {"type": "integer", "example": 5},
+          "comment": {"type": "string", "nullable": true, "example": "Çok yardımcı oldu."},
+          "createdAt": {"type": "string", "format": "date-time", "example": "2025-05-15T11:00:00Z"}
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "errorCode": {"type": "string", "example": "RESOURCE_NOT_FOUND"},
+          "errorMessage": {"type": "string", "example": "İstenen kaynak bulunamadı."},
+          "details": {"type": "object", "nullable": true, "example": {"id": 123}}
+        },
+        "required": ["errorCode", "errorMessage"]
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Kimlik doğrulama için JWT token. Örnek: 'Authorization: Bearer eyJhbGciOiJSUzI1NiIs...'."
+      }
+    }
+  }
+}

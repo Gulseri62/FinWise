@@ -1,0 +1,70 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Kullanıcı Bilgileri API",
+    "version": "1.0.0",
+    "description": "Giriş yapmış kullanıcının temel profil bilgilerini getirir."
+  },
+  "servers": [{"url": "/api/v1"}],
+  "tags": [
+    {
+      "name": "User Profile",
+      "description": "Kullanıcının kişisel bilgileri."
+    }
+  ],
+  "paths": {
+    "/auth/me": {
+      "get": {
+        "tags": ["User Profile", "Authentication"],
+        "summary": "Mevcut kullanıcının profil bilgilerini getirir.",
+        "description": "Giriş yapmış kullanıcının ID, ad, soyad, e-posta ve kullanıcı tipini döndürür.",
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "Kullanıcı profil bilgileri başarıyla alındı.",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/UserProfileResponse"}
+              }
+            }
+          },
+          "401": {
+            "description": "Yetkisiz erişim.",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}
+          },
+          "500": {
+            "description": "Sunucu hatası.",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UserProfileResponse": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "integer", "example": 1},
+          "firstName": {"type": "string", "example": "Ali"},
+          "lastName": {"type": "string", "example": "Veli"},
+          "email": {"type": "string", "format": "email", "example": "ali.veli@example.com"},
+          "userType": {"type": "string", "enum": ["user", "advisor"], "example": "user"}
+        },
+        "required": ["id", "firstName", "lastName", "email", "userType"]
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "errorCode": {"type": "string"},
+          "errorMessage": {"type": "string"},
+          "details": {"type": "object", "nullable": true}
+        },
+        "required": ["errorCode", "errorMessage"]
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {"type": "http", "scheme": "bearer", "bearerFormat": "JWT"}
+    }
+  }
+}

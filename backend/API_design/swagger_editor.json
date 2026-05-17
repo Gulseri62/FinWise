@@ -1,0 +1,734 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Kullanıcı Yönetimi API",
+    "version": "1.0.0",
+    "description": "Kullanıcı girişi, kayıt olma ve şifre değiştirme işlemleri için API."
+  },
+  "servers": [
+    {
+      "url": "https://api.example.com/v1"
+    }
+  ],
+  "paths": {
+    "/auth/signup": {
+      "post": {
+        "summary": "Yeni kullanıcı kaydı",
+        "description": "Yeni bir kullanıcı hesabı oluşturur.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserSignUp"
+              },
+              "examples": {
+                "example-1": {
+                  "summary": "Kullanıcı kaydolma senaryosu.",
+                  "value": {
+                    "firstName": "Yusuf",
+                    "lastName": "Yılmaz",
+                    "email": "ysfylmz@gmail.com",
+                    "password": "Abc12345"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Kullanıcı başarıyla kaydedildi.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                },
+                "examples": {
+                  "example-1": {
+                    "summary": "Başarılı kaydolmanın döndüreceği değerler.",
+                    "value": {
+                      "message": "Kullanıcı başarıyla kaydedildi.",
+                      "userId": 1,
+                      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoieXNmeWxtekBnbWFpbC5jb20iLCJpYXQiOjE2MTYyMzkwMjIsImV4cCI6MTYxNjI0MjYyMn0.4j5X3Y2jJ2Z8X7Q1Y9W6R8T0U1I2O3P4Q5W6E7R8T9Y0U1I",
+                      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTYxNjIzOTAyMn0.X2Y3Z4A5B6C7D8E9F0G1H2I3J4K5L6M7N8O9P0Q1R2",
+                      "expiresIn": 3600
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Geçersiz istek. Eksik veya hatalı alanlar.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "missingField": {
+                    "summary": "Zorunlu alanlar eksik.",
+                    "value": {
+                      "errorCode": "VALIDATION_ERROR",
+                      "errorMessage": "Zorunlu alanlar eksik.",
+                      "details": {
+                        "missingField": [
+                          "password"
+                        ],
+                        "recievedData": {
+                          "email": "ysfylmz@gmail.com"
+                        }
+                      }
+                    }
+                  },
+                  "invalidEmail": {
+                    "summary": "Geçersiz email formatı.",
+                    "value": {
+                      "errorCode": "VALIDATION_ERROR",
+                      "errorMessage": "Geçersiz email formatı.",
+                      "details": {
+                        "invalidField": "email",
+                        "validationRule": "RFC email formatı"
+                      }
+                    }
+                  },
+                  "invalidPasswordFormat": {
+                    "summary": "Geçersiz şifre formatı.",
+                    "value": {
+                      "errorCode": "VALIDATION_ERROR",
+                      "errorMessage": "Şifre geçersiz formatta. En az bir büyük harf ve sembol içermelidir.",
+                      "details": {
+                        "invalidField": "password"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "E-posta adresi zaten kayıtlı.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "errorCode": "CONFLICT_ERROR",
+                  "errorMessage": "Bu e-posta adresi zaten kullanımda",
+                  "details": {
+                    "conflictingField": "email",
+                    "suggestedAction": "Farklı bir e-posta deneyin veya giriş yapın"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Sunucu hatası.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "errorCode": "SERVER_ERROR",
+                  "errorMessage": "Sunucu kaynaklı bir hata oluştu",
+                  "details": "Lütfen daha sonra tekrar deneyiniz"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/signin": {
+      "post": {
+        "summary": "Kullanıcı girişi",
+        "description": "5 dakikada en fazla 10 denemeye izin verilir.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserSignIn"
+              },
+              "examples": {
+                "example-1": {
+                  "summary": "Giriş yapma senaryosu.",
+                  "value": {
+                    "firstName": "Yusuf",
+                    "email": "ysfylmz@gmail.com",
+                    "password": "Abc12345"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Giriş başarılı.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                },
+                "examples": {
+                  "example-1": {
+                    "summary": "Başarılı girişin döndüreceği değerler.",
+                    "value": {
+                      "message": "Giriş başarılı.",
+                      "userId": 1,
+                      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoieXNmeWxtekBnbWFpbC5jb20iLCJpYXQiOjE2MTYyMzkwMjIsImV4cCI6MTYxNjI0MjYyMn0.4j5X3Y2jJ2Z8X7Q1Y9W6R8T0U1I2O3P4Q5W6E7R8T9Y0U1I",
+                      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTYxNjIzOTAyMn0.X2Y3Z4A5B6C7D8E9F0G1H2I3J4K5L6M7N8O9P0Q1R2",
+                      "expiresIn": 3600
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Geçersiz istek. Eksik veya hatalı alanlar.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "missingField": {
+                    "summary": "Zorunlu alanlar eksik.",
+                    "value": {
+                      "errorCode": "VALIDATION_ERROR",
+                      "errorMessage": "Zorunlu alanlar eksik.",
+                      "details": {
+                        "missingField": [
+                          "password",
+                          "firstName"
+                        ],
+                        "recievedData": {
+                          "email": "ysfylmz@gmail.com"
+                        }
+                      }
+                    }
+                  },
+                  "invalidEmail": {
+                    "summary": "Geçersiz email formatı.",
+                    "value": {
+                      "errorCode": "VALIDATION_ERROR",
+                      "errorMessage": "Geçersiz email formatı.",
+                      "details": {
+                        "invalidField": "email",
+                        "validationRule": "RFC email formatı"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Kimlik doğrulama başarısız. (E-posta veya şifre başarısız.)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "example-1": {
+                    "summary": "Kimlik doğrulama hatası",
+                    "value": {
+                      "errorCode": "401",
+                      "errorMessage": "Kimlik doğrulama başarısız.",
+                      "details": "E-posta veya şifre hatalı."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Çok fazla istek",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "errorCode": "RATE_LIMIT_EXCEEDED",
+                  "errorMessage": "Çok fazla deneme yaptınız",
+                  "details": {
+                    "limit": "5 dakikada 10 deneme",
+                    "retryAfter": "300 saniye"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Sunucu hatası.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "summary": "Yeni access token al",
+        "description": "Refresh token kullanarak yeni bir access token üretir.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "refreshToken": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "refreshToken"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTYxNjIzOTAyMn0.X2Y3Z4A5B6C7D8E9F0G1H2I3J4K5L6M7N8O9P0Q1R2"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Yeni token başarıyla oluşturuldu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "message": "Token başarıyla yenilendi",
+                      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoieXNmeWxtekBnbWFpbC5jb20iLCJpYXQiOjE2MTYyNDI2MjIsImV4cCI6MTYxNjI0NjIyMn0.9A8B7C6D5E4F3G2H1I0J9K8L7M6N5O4P3Q2R1S0T9",
+                      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTYxNjI0MjYyMn0.1Z2Y3X4W5V6U7T8S9R0Q1P2O3N4M5L6K7J8I9H0G",
+                      "expiresIn": 3600
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Geçersiz refresh token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "errorCode": "TOKEN_INVALID",
+                  "errorMessage": "Refresh token geçersiz veya süresi dolmuş",
+                  "details": {
+                    "cause": "Token süresi 7 gündür, bu token 10 gün önce oluşturulmuş"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Sunucu hatası",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/forgot-password": {
+      "post": {
+        "summary": "Şifre sıfırlama bağlantısı gönder",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgotPasswordRequest"
+              },
+              "examples": {
+                "example-1": {
+                  "summary": "Örnek şifre sıfırlama isteği",
+                  "value": {
+                    "email": "ysfylmz@gmail.com"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "summary": "Başarılı şifre sıfırlama isteğinin döndüreceği değerler.",
+                    "value": {
+                      "message": "Şifre sıfırlama bağlantısı e-posta adresinize gönderildi."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Geçersiz istek. Eksik veya hatalı alanlar.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "example-1": {
+                    "summary": "Eksik alan hatası",
+                    "value": {
+                      "errorCode": "400",
+                      "errorMessage": "Eksik veya hatalı alanlar."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "E-posta adresi sistemde kayıtlı değil.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "errorCode": "USER_NOT_FOUND",
+                  "errorMessage": "Bu e-posta adresiyle kayıtlı kullanıcı bulunamadı",
+                  "details": {
+                    "checkedEmail": "nonexistent@example.com"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Sunucu hatası.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/reset-password": {
+      "post": {
+        "summary": "Şifreyi sıfırla",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordRequest"
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "email": "ysfylmz@gmail.com",
+                    "resetToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlzZnlsbXpAZ21haWwuY29tIiwiaWF0IjoxNjE2MjM5MDIyLCJleHAiOjE2MTY4NDM4MjJ9.1A2S3D4F5G6H7J8K9L0Z1X2C3V4B5N6M7Q8W9E0R",
+                    "newPassword": "YeniSifre123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Şifreniz başarıyla sıfırlandı.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "message": "Şifre başarıyla güncellendi"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Geçersiz istek. Eksik veya hatalı alanlar.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "errorCode": "PASSWORD_POLICY_VIOLATION",
+                  "errorMessage": "Şifre en az 8 karakter, büyük/küçük harf ve sayı içermeli",
+                  "details": {
+                    "validationRules": [
+                      "minLength: 8",
+                      "requireUppercase: true",
+                      "requireNumber: true"
+                    ],
+                    "invalidPassword": "weakpass"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Geçersiz token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "errorCode": "401",
+                      "errorMessage": "Geçersiz veya süresi dolmuş token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Sunucu hatası.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UserSignUp": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "minLength": 2,
+            "example": "Yusuf"
+          },
+          "lastName": {
+            "type": "string",
+            "minLength": 2,
+            "example": "Yılmaz"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "ysfylmz@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$",
+            "description": "En az 8 karakter, büyük/küçük harf ve sayı içermeli",
+            "example": "Abc12345"
+          }
+        },
+        "required": [
+          "firstName",
+          "lastName",
+          "email",
+          "password"
+        ]
+      },
+      "UserSignIn": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "ysfylmz@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "Abc12345"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "UserResponse": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "example": 1
+          },
+          "message": {
+            "type": "string",
+            "example": "Giriş başarılı"
+          },
+          "token": {
+            "type": "string",
+            "description": "Kimlik doğrulama için JWT token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "refreshToken": {
+            "type": "string",
+            "description": "JWT'yi yenilemek için token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "expiresIn": {
+            "type": "integer",
+            "description": "Token geçerlilik süresi (saniye cinsinden)",
+            "example": 3600
+          }
+        }
+      },
+      "ForgotPasswordRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "ysfylmz@gmail.com"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "ResetPasswordRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "ysfylmz@gmail.com"
+          },
+          "resetToken": {
+            "type": "string",
+            "description": "Şifre yenileme için JWT token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "newPassword": {
+            "type": "string",
+            "minLength": 8,
+            "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$",
+            "description": "En az 8 karakter, büyük/küçük harf ve sayı içermeli",
+            "example": "YeniSifre123"
+          }
+        },
+        "required": [
+          "email",
+          "resetToken",
+          "newPassword"
+        ]
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "errorCode": {
+            "type": "string",
+            "example": "401"
+          },
+          "errorMessage": {
+            "type": "string",
+            "example": "Kimlik doğrulama başarısız"
+          },
+          "details": {
+            "type": "string",
+            "example": "E-posta veya şifre hatalı"
+          }
+        }
+      },
+      "JWTClaims": {
+        "type": "object",
+        "properties": {
+          "sub": {
+            "type": "string",
+            "description": "Kullanıcı ID",
+            "example": "1"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "ysfylmz@gmail.com"
+          },
+          "iat": {
+            "type": "integer",
+            "description": "Token oluşturulma zamanı (timestamp)",
+            "example": 1616239022
+          },
+          "exp": {
+            "type": "integer",
+            "description": "Token son geçerlilik zamanı (timestamp)",
+            "example": 1616242622
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "JWT token gereklidir. Örnek: 'Authorization: Bearer eyJhbGciOiJIUz...'"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
+}

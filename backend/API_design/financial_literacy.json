@@ -1,0 +1,326 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Finansal Okuryazarlık API",
+    "description": "Finansal okuryazarlık eğitimi başvuru formu ve içerik bilgi paketi.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.fin_lit.com/v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Finansal Okuryazarlık",
+      "description": "Finansal Okuryazarlık modülü hakkında genel bilgiler ve işlemler."
+    },
+    {
+      "name": "Eğitim İçerik Paketi",
+      "description": "Finansal Okuryazarlık eğitimi hakkında detaylı bilgi."
+    },
+    {
+      "name": "Başvuru Formu",
+      "description": "Eğitim başvuru formu işlemleri."
+    },
+    {
+      "name": "Kullanıcı Basvuru"
+    }
+  ],
+  "paths": {
+    "/finansal-okuryazarlik": {
+      "get": {
+        "tags": [
+          "Finansal Okuryazarlık"
+        ],
+        "summary": "Finansal okuryazarlık hakkında genel bilgileri getirir.",
+        "description": "Ana sayfada gösterilecek finansal okuryazarlık tannımını gösterir.",
+        "responses": {
+          "200": {
+            "description": "İstek başarılı. Finansal okuryazarlık ana sayfa bilgilerini içerir.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HomePageInfo"
+                },
+                "examples": {
+                  "ornek": {
+                    "summary": "Örnek ana sayfa bilgisi",
+                    "value": {
+                      "baslik": "Finansal Okuryazarlığa Giriş",
+                      "aciklama": "Finansal okuryazarlık, bireylerin mali kaynaklarını etkili bir şekilde yönetebilmeleri için gereken bilgi ve beceriler bütünüdür.",
+                      "bolumler": [
+                        {
+                          "bolumBasligi": "Neden Önemli?",
+                          "bolumIcerigi": "Kişisel bütçe yönetimi, tasarruf, yatırım ve borç yönetimi gibi konularda bilinçli kararlar almanızı sağlar."
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Sunucu Hatası."
+          }
+        }
+      }
+    },
+    "/finansal-okuryazarlik/kurs-bilgi-paketi": {
+      "get": {
+        "tags": [
+          "Eğitim İçerik Paketi"
+        ],
+        "summary": "Finansal okuryazarlık eğitimi içerik paketini gösterir.",
+        "responses": {
+          "200": {
+            "description": "İstek başarılı. Kurs bilgi paketini içerir.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseContentPackage"
+                },
+                "examples": {
+                  "example": {
+                    "summary": "Örnek kurs bilgi paketi",
+                    "value": {
+                      "paketAdi": "Temel Finansal Okuryazarlık Eğitimi",
+                      "paketAciklamasi": "Bütçeleme, tasarruf ve yatırımın temellerini öğrenin.",
+                      "moduller": [
+                        {
+                          "haftaAdi": "Modül 1: Bütçeleme ve Harcama Yönetimi",
+                          "aciklama": "Gelir ve giderlerinizi takip etme, bütçe oluşturma teknikleri."
+                        },
+                        {
+                          "haftaAdi": "Modül 2: Tasarruf ve Yatırım Stratejileri",
+                          "aciklama": "Farklı tasarruf yöntemleri ve temel yatırım araçları."
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sayfa Bulunmadı."
+          },
+          "500": {
+            "description": "Sunucu Hatası."
+          }
+        }
+      }
+    },
+    "/finansal-okuryazarlik/basvuru-formu": {
+      "get": {
+        "tags": [
+          "Başvuru Formu"
+        ],
+        "summary": "Eğitim başvuru formuna erişim.",
+        "responses": {
+          "200": {
+            "description": "İstek başarılı. Başvuru formuna erişim sağlanır.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationForm"
+                },
+                "examples": {
+                  "ornek": {
+                    "summary": "Örnek başvuru formu yapısı",
+                    "value": {
+                      "formBasligi": "Finansal Okuryazarlık Eğitimi Başvuru Formu. BURADA BAŞVURU İÇİN GEREKLİ BUTONLAR OLMALI. İSİM-SOYİSİM GİBİ"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Sunucu Hatası."
+          }
+        }
+      }
+    },
+    "/finansal-okuryazarlik/basvuru-yap": {
+      "post": {
+        "tags": [
+          "Kullanıcı Basvuru"
+        ],
+        "summary": "Yeni bir eğitim başvurusu oluşturur.",
+        "description": "Kullanıcının doldurduğu başvuru formunu sisteme kaydeder.",
+        "requestBody": {
+          "description": "Oluşturulacak başvuru bilgileri",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplicationRequest"
+              },
+              "examples": {
+                "ornek": {
+                  "summary": "Örnek başvuru isteği",
+                  "value": {
+                    "firstName": "Ayşe",
+                    "lastName": "Kaya",
+                    "email": "aysekaya@gmail.com",
+                    "phone": "5551234567",
+                    "gender": "female",
+                    "age": 25
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Başvuru başarıyla oluşturuldu.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationResponse"
+                },
+                "examples": {
+                  "example": {
+                    "summary": "Başarılı başvuru yanıtı",
+                    "value": {
+                      "mesaj": "Başvurunuz başarıyla alınmıştır.",
+                      "basvuruId": "b123xyz"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Eksik veya Hatalı alanlar."
+          },
+          "500": {
+            "description": "Sunucu Hatası."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HomePageInfo": {
+        "type": "object",
+        "properties": {
+          "baslik": {
+            "type": "string",
+            "description": "Sayfanın ana başlığı."
+          },
+          "aciklama": {
+            "type": "string",
+            "description": "Sayfa hakkında genel açıklama."
+          },
+          "bolumler": {
+            "type": "array",
+            "description": "Ana sayfa bölümleri.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "bolumBasligi": {
+                  "type": "string",
+                  "description": "Bölümün başlığı."
+                },
+                "bolumIcerigi": {
+                  "type": "string",
+                  "description": "Bölümün içeriği."
+                }
+              }
+            }
+          }
+        }
+      },
+      "CourseContentPackage": {
+        "type": "object",
+        "properties": {
+          "paketAdi": {
+            "type": "string",
+            "description": "Eğitim paketinin adı."
+          },
+          "paketAciklamasi": {
+            "type": "string",
+            "description": "Eğitim paketinin genel açıklaması."
+          },
+          "moduller": {
+            "type": "array",
+            "description": "Eğitim paketinin modülleri.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "haftadi": {
+                  "type": "string",
+                  "description": "Modülün veya haftanın adı."
+                },
+                "aciklama": {
+                  "type": "string",
+                  "description": "Modülün veya haftanın açıklaması."
+                }
+              }
+            }
+          }
+        }
+      },
+      "ApplicationForm": {
+        "type": "object",
+        "properties": {
+          "formBasligi": {
+            "type": "string"
+          }
+        }
+      },
+      "ApplicationRequest": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "minLength": 2
+          },
+          "lastName": {
+            "type": "string",
+            "minLength": 2
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "gender": {
+            "type": "string",
+            "nullable": true
+          },
+          "age": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "firstName",
+          "lastName",
+          "email",
+          "age"
+        ]
+      },
+      "ApplicationResponse": {
+        "type": "object",
+        "properties": {
+          "mesaj": {
+            "type": "string"
+          },
+          "basvuruId": {
+            "type": "string",
+            "description": "Başarılı başvuruya atanan id."
+          }
+        }
+      }
+    }
+  }
+}

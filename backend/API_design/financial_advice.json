@@ -1,0 +1,223 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Finansal Öneri Sistemi API",
+    "description": "Kullanıcılara kişiselleştirilmiş finansal öneriler sunma ve bu önerilere geri bildirim alma API'si.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/api/v1",
+      "description": "Geliştirme Sunucusu (Projenizin base URL'ine göre güncelleyebilirsiniz)"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Financial Advice",
+      "description": "Kişiselleştirilmiş finansal öneri ve geri bildirim işlemleri."
+    }
+  ],
+  "paths": {
+    "/advice/personal": {
+      "get": {
+        "tags": ["Financial Advice"],
+        "summary": "Kullanıcı için kişiselleştirilmiş finansal önerileri getirir.",
+        "description": "Giriş yapmış kullanıcının mevcut finansal durumuna ve hedeflerine göre (ileride eklenebilir) oluşturulmuş aktif önerileri listeler.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Kişiselleştirilmiş öneriler başarıyla alındı.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PersonalizedAdviceResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Yetkisiz erişim (token eksik veya geçersiz).",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "500": {
+            "description": "Sunucu hatası.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/advice/feedback": {
+      "post": {
+        "tags": ["Financial Advice"],
+        "summary": "Bir finansal öneriye kullanıcı geri bildirimi gönderir.",
+        "description": "Kullanıcının, kendisine sunulan bir finansal önerinin faydalı olup olmadığına dair geri bildirimde bulunmasını sağlar.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdviceFeedbackRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Geri bildirim başarıyla kaydedildi.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdviceFeedbackResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Geçersiz istek verisi (örn: eksik alan, geçersiz değer).",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "401": {
+            "description": "Yetkisiz erişim.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "404": {
+            "description": "Geri bildirim yapılacak öneri bulunamadı.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "500": {
+            "description": "Sunucu hatası.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "PersonalizedAdviceResponse": {
+        "type": "object",
+        "description": "Kullanıcıya sunulan bir finansal önerinin detayları.",
+        "properties": {
+          "advice_id": {
+            "type": "integer",
+            "description": "Önerinin benzersiz ID'si.",
+            "example": 101
+          },
+          "advice_text": {
+            "type": "string",
+            "description": "Öneri metni.",
+            "example": "Bu ayki market harcamalarınız ortalamanın üzerinde. Harcamalarınızı gözden geçirmeyi düşünebilirsiniz."
+          },
+          "advice_type": {
+            "type": "string",
+            "description": "Önerinin kategorisi veya tipi (örn: 'harcama_kontrolü', 'tasarruf_onerisi', 'yatirim_firsati').",
+            "example": "harcama_kontrolu"
+          },
+          "generated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Önerinin oluşturulma zamanı.",
+            "example": "2025-05-20T10:00:00Z"
+          },
+          "priority": {
+            "type": "integer",
+            "description": "Önerinin önceliği (örn: 1-Düşük, 5-Yüksek).",
+            "example": 3,
+            "nullable": true
+          }
+          
+        },
+        "required": ["advice_id", "advice_text", "advice_type", "generated_at"]
+      },
+      "AdviceFeedbackRequest": {
+        "type": "object",
+        "description": "Bir finansal öneri için kullanıcı geri bildirim isteği.",
+        "properties": {
+          "advice_id": {
+            "type": "integer",
+            "description": "Geri bildirim yapılan önerinin ID'si.",
+            "example": 101
+          },
+          "is_helpful": {
+            "type": "boolean",
+            "description": "Önerinin faydalı olup olmadığı.",
+            "example": true
+          },
+          "comment": {
+            "type": "string",
+            "description": "Kullanıcının ek yorumları (opsiyonel).",
+            "nullable": true,
+            "example": "Bu öneri sayesinde harcamalarıma daha çok dikkat etmeye başladım."
+          }
+        },
+        "required": ["advice_id", "is_helpful"]
+      },
+      "AdviceFeedbackResponse": {
+        "type": "object",
+        "description": "Kaydedilen geri bildirimin detayları.",
+        "properties": {
+          "feedback_id": {
+            "type": "integer",
+            "description": "Geri bildirimin benzersiz ID'si.",
+            "example": 1
+          },
+          "advice_id": {
+            "type": "integer",
+            "description": "Geri bildirim yapılan önerinin ID'si.",
+            "example": 101
+          },
+          "user_id": {
+            "type": "integer",
+            "description": "Geri bildirimi yapan kullanıcının ID'si.",
+            "example": 123
+          },
+          "is_helpful": {
+            "type": "boolean",
+            "example": true
+          },
+          "comment": {
+            "type": "string",
+            "nullable": true,
+            "example": "Bu öneri sayesinde harcamalarıma daha çok dikkat etmeye başladım."
+          },
+          "feedback_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Geri bildirimin yapılma zamanı.",
+            "example": "2025-05-20T14:30:00Z"
+          }
+        },
+        "required": ["feedback_id", "advice_id", "user_id", "is_helpful", "feedback_at"]
+      },
+      "ErrorResponse": { 
+        "type": "object",
+        "properties": {
+          "errorCode": {"type": "string", "example": "RESOURCE_NOT_FOUND"},
+          "errorMessage": {"type": "string", "example": "İstenen kaynak bulunamadı."},
+          "details": {"type": "object", "nullable": true}
+        },
+        "required": ["errorCode", "errorMessage"]
+      }
+    },
+    "securitySchemes": { 
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Kimlik doğrulama için JWT token."
+      }
+    }
+  }
+}

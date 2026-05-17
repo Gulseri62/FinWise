@@ -1,0 +1,411 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Bütçe Yönetimi API",
+    "description": "Kullanıcıların kişisel gelir ve giderlerini yönetmeleri, kategorilendirmeleri ve raporlamaları için API.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/api/v1",
+      "description": "Geliştirme Sunucusu "
+    }
+  ],
+  "tags": [
+    {
+      "name": "Budget",
+      "description": "Gelir, gider ekleme, listeleme, silme ve bütçe raporlama işlemleri."
+    }
+  ],
+  "paths": {
+    "/budget/income": {
+      "post": {
+        "tags": ["Budget"],
+        "summary": "Yeni bir gelir kaydı oluşturur.",
+        "description": "Giriş yapmış kullanıcının hesabına yeni bir gelir işlemi ekler.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BudgetEntryCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Gelir kaydı başarıyla oluşturuldu.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BudgetEntryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Geçersiz istek verisi.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "401": {
+            "description": "Yetkisiz erişim (token eksik veya geçersiz).",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "500": {
+            "description": "Sunucu hatası.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/budget/expense": {
+      "post": {
+        "tags": ["Budget"],
+        "summary": "Yeni bir gider kaydı oluşturur.",
+        "description": "Giriş yapmış kullanıcının hesabına yeni bir gider işlemi ekler.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BudgetEntryCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Gider kaydı başarıyla oluşturuldu.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BudgetEntryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Geçersiz istek verisi.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "401": {
+            "description": "Yetkisiz erişim.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "500": {
+            "description": "Sunucu hatası.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/budget/transactions": {
+      "get": {
+        "tags": ["Budget"],
+        "summary": "Kullanıcının bütçe işlemlerini listeler.",
+        "description": "Giriş yapmış kullanıcının gelir ve gider işlemlerini çeşitli filtrelere göre listeler.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Filtreleme için başlangıç tarihi (YYYY-MM-DD).",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "Filtreleme için bitiş tarihi (YYYY-MM-DD).",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "description": "Filtreleme için kategori adı.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "entry_type",
+            "in": "query",
+            "description": "Filtreleme için işlem tipi ('income' veya 'expense').",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["income", "expense"]
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Sayfa numarası.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Sayfa başına kayıt sayısı.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10,
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "İşlem listesi başarıyla alındı.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total_items": {"type": "integer", "example": 50},
+                    "total_pages": {"type": "integer", "example": 5},
+                    "current_page": {"type": "integer", "example": 1},
+                    "items_per_page": {"type": "integer", "example": 10},
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/BudgetEntryResponse"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Geçersiz filtre parametreleri.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "401": {
+            "description": "Yetkisiz erişim.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "500": {
+            "description": "Sunucu hatası.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/budget/transactions/{transactionId}": {
+      "delete": {
+        "tags": ["Budget"],
+        "summary": "Belirli bir bütçe kaydını siler.",
+        "description": "Kullanıcının kendi oluşturduğu bir gelir veya gider kaydını ID'sine göre siler.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "transactionId",
+            "in": "path",
+            "required": true,
+            "description": "Silinecek bütçe kaydının ID'si.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Kayıt başarıyla silindi (Yanıt gövdesi yok)."
+          },
+          "401": {
+            "description": "Yetkisiz erişim (token eksik veya geçersiz).",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "403": {
+            "description": "Erişim reddedildi (kayıt kullanıcıya ait değil).",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "404": {
+            "description": "Kayıt bulunamadı.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "500": {
+            "description": "Sunucu hatası.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+     
+    },
+    "/budget/report": {
+      "get": {
+        "tags": ["Budget"],
+        "summary": "Kullanıcının bütçe raporunu oluşturur.",
+        "description": "Belirtilen periyoda (aylık, haftalık, günlük) göre kullanıcının mevcut döneme ait gelir-gider özetini ve kategori bazlı dağılımını sunar.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "report_type",
+            "in": "query",
+            "description": "Rapor periyodu. Belirtilen periyot, içinde bulunulan gün baz alınarak hesaplanır (örn: 'monthly' için mevcut ay).",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["daily", "weekly", "monthly"],
+              "default": "monthly"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bütçe raporu başarıyla oluşturuldu.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BudgetReportResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Geçersiz rapor parametreleri.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "401": {
+            "description": "Yetkisiz erişim.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "500": {
+            "description": "Sunucu hatası.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BudgetEntryCreateRequest": {
+        "type": "object",
+        "description": "Yeni bir gelir veya gider kaydı oluşturma isteği.",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "format": "float",
+            "description": "İşlem tutarı (pozitif olmalı).",
+            "example": 150.75
+          },
+          "category": {
+            "type": "string",
+            "description": "İşlem kategorisi.",
+            "example": "Market Alışverişi"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "description": "İşlem için opsiyonel açıklama.",
+            "example": "Haftalık mutfak alışverişi"
+          },
+          "entry_date": {
+            "type": "string",
+            "format": "date",
+            "description": "İşlemin tarihi (YYYY-MM-DD).",
+            "example": "2024-05-18"
+          }
+        },
+        "required": ["amount", "category", "entry_date"]
+      },
+      "BudgetEntryResponse": {
+        "type": "object",
+        "description": "Oluşturulan veya listelenen bir bütçe kaydının detayları.",
+        "properties": {
+          "id": {"type": "integer", "description": "Kaydın benzersiz ID'si.", "example": 1},
+          "user_id": {"type": "integer", "description": "Kaydın ait olduğu kullanıcı ID'si.", "example": 101},
+          "entry_type": {"type": "string", "enum": ["income", "expense"], "description": "İşlem tipi.", "example": "expense"},
+          "amount": {"type": "number", "format": "float", "example": 150.75},
+          "category": {"type": "string", "example": "Market Alışverişi"},
+          "description": {"type": "string", "nullable": true, "example": "Haftalık mutfak alışverişi"},
+          "entry_date": {"type": "string", "format": "date", "example": "2024-05-18"},
+          "created_at": {"type": "string", "format": "date-time", "example": "2024-05-18T10:30:00Z"},
+          "updated_at": {"type": "string", "format": "date-time", "example": "2024-05-18T10:35:00Z"}
+        }
+      },
+      "BudgetReportResponse": {
+        "type": "object",
+        "description": "Oluşturulan bütçe raporunun detayları.",
+        "properties": {
+          "report_type_requested": {"type": "string", "enum": ["daily", "weekly", "monthly"], "example": "monthly", "description": "İstek yapılan rapor tipi."},
+          "period_start_date": {"type": "string", "format": "date", "example": "2024-05-01", "description": "Raporun kapsadığı dönemin başlangıç tarihi."},
+          "period_end_date": {"type": "string", "format": "date", "example": "2024-05-31", "description": "Raporun kapsadığı dönemin bitiş tarihi."},
+          "total_income": {"type": "number", "format": "float", "example": 5000.00},
+          "total_expense": {"type": "number", "format": "float", "example": 3500.50},
+          "balance": {"type": "number", "format": "float", "example": 1499.50},
+          "summary_by_category": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "category": {"type": "string", "example": "Faturalar"},
+                "total_amount": {"type": "number", "format": "float", "example": 850.00},
+                "entry_type": {"type": "string", "enum": ["income", "expense"], "example": "expense"}
+              }
+            },
+            "nullable": true
+          }
+        },
+        "required": ["report_type_requested", "period_start_date", "period_end_date", "total_income", "total_expense", "balance"]
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "errorCode": {"type": "string", "example": "VALIDATION_ERROR"},
+          "errorMessage": {"type": "string", "example": "Sağlanan veriler geçersiz."},
+          "details": {"type": "object", "nullable": true, "example": {"field_name": "Hata mesajı"}}
+        },
+        "required": ["errorCode", "errorMessage"]
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Kimlik doğrulama için JWT token."
+      }
+    }
+  }
+}
